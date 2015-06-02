@@ -1,0 +1,426 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9BDFBFC61B1E76F200C0A0AB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDFBFC51B1E76F200C0A0AB /* AppDelegate.swift */; };
+		9BDFBFC81B1E76F200C0A0AB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDFBFC71B1E76F200C0A0AB /* ViewController.swift */; };
+		9BDFBFCB1B1E76F200C0A0AB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9BDFBFC91B1E76F200C0A0AB /* Main.storyboard */; };
+		9BDFBFCD1B1E76F200C0A0AB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9BDFBFCC1B1E76F200C0A0AB /* Images.xcassets */; };
+		9BDFBFD01B1E76F200C0A0AB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9BDFBFCE1B1E76F200C0A0AB /* LaunchScreen.xib */; };
+		9BDFBFDC1B1E76F200C0A0AB /* Play_TuringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDFBFDB1B1E76F200C0A0AB /* Play_TuringTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9BDFBFD61B1E76F200C0A0AB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9BDFBFB81B1E76F200C0A0AB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9BDFBFBF1B1E76F200C0A0AB;
+			remoteInfo = "Play Turing";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		9BDFBFC01B1E76F200C0A0AB /* Play Turing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Play Turing.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BDFBFC41B1E76F200C0A0AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9BDFBFC51B1E76F200C0A0AB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9BDFBFC71B1E76F200C0A0AB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		9BDFBFCA1B1E76F200C0A0AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		9BDFBFCC1B1E76F200C0A0AB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		9BDFBFCF1B1E76F200C0A0AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		9BDFBFD51B1E76F200C0A0AB /* Play TuringTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Play TuringTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BDFBFDA1B1E76F200C0A0AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9BDFBFDB1B1E76F200C0A0AB /* Play_TuringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Play_TuringTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9BDFBFBD1B1E76F200C0A0AB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BDFBFD21B1E76F200C0A0AB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9BDFBFB71B1E76F200C0A0AB = {
+			isa = PBXGroup;
+			children = (
+				9BDFBFC21B1E76F200C0A0AB /* Play Turing */,
+				9BDFBFD81B1E76F200C0A0AB /* Play TuringTests */,
+				9BDFBFC11B1E76F200C0A0AB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9BDFBFC11B1E76F200C0A0AB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9BDFBFC01B1E76F200C0A0AB /* Play Turing.app */,
+				9BDFBFD51B1E76F200C0A0AB /* Play TuringTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9BDFBFC21B1E76F200C0A0AB /* Play Turing */ = {
+			isa = PBXGroup;
+			children = (
+				9BDFBFC51B1E76F200C0A0AB /* AppDelegate.swift */,
+				9BDFBFC71B1E76F200C0A0AB /* ViewController.swift */,
+				9BDFBFC91B1E76F200C0A0AB /* Main.storyboard */,
+				9BDFBFCC1B1E76F200C0A0AB /* Images.xcassets */,
+				9BDFBFCE1B1E76F200C0A0AB /* LaunchScreen.xib */,
+				9BDFBFC31B1E76F200C0A0AB /* Supporting Files */,
+			);
+			path = "Play Turing";
+			sourceTree = "<group>";
+		};
+		9BDFBFC31B1E76F200C0A0AB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				9BDFBFC41B1E76F200C0A0AB /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		9BDFBFD81B1E76F200C0A0AB /* Play TuringTests */ = {
+			isa = PBXGroup;
+			children = (
+				9BDFBFDB1B1E76F200C0A0AB /* Play_TuringTests.swift */,
+				9BDFBFD91B1E76F200C0A0AB /* Supporting Files */,
+			);
+			path = "Play TuringTests";
+			sourceTree = "<group>";
+		};
+		9BDFBFD91B1E76F200C0A0AB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				9BDFBFDA1B1E76F200C0A0AB /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9BDFBFBF1B1E76F200C0A0AB /* Play Turing */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9BDFBFDF1B1E76F200C0A0AB /* Build configuration list for PBXNativeTarget "Play Turing" */;
+			buildPhases = (
+				9BDFBFBC1B1E76F200C0A0AB /* Sources */,
+				9BDFBFBD1B1E76F200C0A0AB /* Frameworks */,
+				9BDFBFBE1B1E76F200C0A0AB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Play Turing";
+			productName = "Play Turing";
+			productReference = 9BDFBFC01B1E76F200C0A0AB /* Play Turing.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9BDFBFD41B1E76F200C0A0AB /* Play TuringTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9BDFBFE21B1E76F200C0A0AB /* Build configuration list for PBXNativeTarget "Play TuringTests" */;
+			buildPhases = (
+				9BDFBFD11B1E76F200C0A0AB /* Sources */,
+				9BDFBFD21B1E76F200C0A0AB /* Frameworks */,
+				9BDFBFD31B1E76F200C0A0AB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9BDFBFD71B1E76F200C0A0AB /* PBXTargetDependency */,
+			);
+			name = "Play TuringTests";
+			productName = "Play TuringTests";
+			productReference = 9BDFBFD51B1E76F200C0A0AB /* Play TuringTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9BDFBFB81B1E76F200C0A0AB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = ShipShape;
+				TargetAttributes = {
+					9BDFBFBF1B1E76F200C0A0AB = {
+						CreatedOnToolsVersion = 6.3.2;
+					};
+					9BDFBFD41B1E76F200C0A0AB = {
+						CreatedOnToolsVersion = 6.3.2;
+						TestTargetID = 9BDFBFBF1B1E76F200C0A0AB;
+					};
+				};
+			};
+			buildConfigurationList = 9BDFBFBB1B1E76F200C0A0AB /* Build configuration list for PBXProject "Play Turing" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 9BDFBFB71B1E76F200C0A0AB;
+			productRefGroup = 9BDFBFC11B1E76F200C0A0AB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9BDFBFBF1B1E76F200C0A0AB /* Play Turing */,
+				9BDFBFD41B1E76F200C0A0AB /* Play TuringTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9BDFBFBE1B1E76F200C0A0AB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BDFBFCB1B1E76F200C0A0AB /* Main.storyboard in Resources */,
+				9BDFBFD01B1E76F200C0A0AB /* LaunchScreen.xib in Resources */,
+				9BDFBFCD1B1E76F200C0A0AB /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BDFBFD31B1E76F200C0A0AB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9BDFBFBC1B1E76F200C0A0AB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BDFBFC81B1E76F200C0A0AB /* ViewController.swift in Sources */,
+				9BDFBFC61B1E76F200C0A0AB /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BDFBFD11B1E76F200C0A0AB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BDFBFDC1B1E76F200C0A0AB /* Play_TuringTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9BDFBFD71B1E76F200C0A0AB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9BDFBFBF1B1E76F200C0A0AB /* Play Turing */;
+			targetProxy = 9BDFBFD61B1E76F200C0A0AB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		9BDFBFC91B1E76F200C0A0AB /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9BDFBFCA1B1E76F200C0A0AB /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		9BDFBFCE1B1E76F200C0A0AB /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9BDFBFCF1B1E76F200C0A0AB /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		9BDFBFDD1B1E76F200C0A0AB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9BDFBFDE1B1E76F200C0A0AB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9BDFBFE01B1E76F200C0A0AB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "Play Turing/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9BDFBFE11B1E76F200C0A0AB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "Play Turing/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		9BDFBFE31B1E76F200C0A0AB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Play TuringTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Play Turing.app/Play Turing";
+			};
+			name = Debug;
+		};
+		9BDFBFE41B1E76F200C0A0AB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Play TuringTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Play Turing.app/Play Turing";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9BDFBFBB1B1E76F200C0A0AB /* Build configuration list for PBXProject "Play Turing" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BDFBFDD1B1E76F200C0A0AB /* Debug */,
+				9BDFBFDE1B1E76F200C0A0AB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9BDFBFDF1B1E76F200C0A0AB /* Build configuration list for PBXNativeTarget "Play Turing" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BDFBFE01B1E76F200C0A0AB /* Debug */,
+				9BDFBFE11B1E76F200C0A0AB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		9BDFBFE21B1E76F200C0A0AB /* Build configuration list for PBXNativeTarget "Play TuringTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BDFBFE31B1E76F200C0A0AB /* Debug */,
+				9BDFBFE41B1E76F200C0A0AB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9BDFBFB81B1E76F200C0A0AB /* Project object */;
+}
