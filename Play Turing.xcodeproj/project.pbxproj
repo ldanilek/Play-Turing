@@ -7,12 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9BB4A68F1B1EDBBB002E3F4B /* TuringChallengeSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB4A68E1B1EDBBB002E3F4B /* TuringChallengeSelectorViewController.swift */; };
 		9BDFBFC61B1E76F200C0A0AB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDFBFC51B1E76F200C0A0AB /* AppDelegate.swift */; };
 		9BDFBFC81B1E76F200C0A0AB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDFBFC71B1E76F200C0A0AB /* ViewController.swift */; };
 		9BDFBFCB1B1E76F200C0A0AB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9BDFBFC91B1E76F200C0A0AB /* Main.storyboard */; };
 		9BDFBFCD1B1E76F200C0A0AB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9BDFBFCC1B1E76F200C0A0AB /* Images.xcassets */; };
 		9BDFBFD01B1E76F200C0A0AB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9BDFBFCE1B1E76F200C0A0AB /* LaunchScreen.xib */; };
 		9BDFBFDC1B1E76F200C0A0AB /* Play_TuringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDFBFDB1B1E76F200C0A0AB /* Play_TuringTests.swift */; };
+		9BDFBFE61B1E774800C0A0AB /* TuringMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDFBFE51B1E774800C0A0AB /* TuringMachine.swift */; };
+		9BDFBFE71B1E774800C0A0AB /* TuringMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDFBFE51B1E774800C0A0AB /* TuringMachine.swift */; };
+		9BDFBFE91B1E8B5400C0A0AB /* TuringTapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDFBFE81B1E8B5400C0A0AB /* TuringTapeView.swift */; };
+		9BDFBFEB1B1E9F4400C0A0AB /* TuringHeadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDFBFEA1B1E9F4400C0A0AB /* TuringHeadView.swift */; };
+		9BDFBFED1B1EAC0600C0A0AB /* AddRuleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDFBFEC1B1EAC0600C0A0AB /* AddRuleViewController.swift */; };
+		9BDFBFEF1B1ED79900C0A0AB /* TuringChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDFBFEE1B1ED79900C0A0AB /* TuringChallenge.swift */; };
+		9BDFBFF01B1ED79900C0A0AB /* TuringChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDFBFEE1B1ED79900C0A0AB /* TuringChallenge.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9BB4A68E1B1EDBBB002E3F4B /* TuringChallengeSelectorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TuringChallengeSelectorViewController.swift; sourceTree = "<group>"; };
 		9BDFBFC01B1E76F200C0A0AB /* Play Turing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Play Turing.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BDFBFC41B1E76F200C0A0AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BDFBFC51B1E76F200C0A0AB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -36,6 +45,11 @@
 		9BDFBFD51B1E76F200C0A0AB /* Play TuringTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Play TuringTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BDFBFDA1B1E76F200C0A0AB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BDFBFDB1B1E76F200C0A0AB /* Play_TuringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Play_TuringTests.swift; sourceTree = "<group>"; };
+		9BDFBFE51B1E774800C0A0AB /* TuringMachine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TuringMachine.swift; sourceTree = "<group>"; };
+		9BDFBFE81B1E8B5400C0A0AB /* TuringTapeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TuringTapeView.swift; sourceTree = "<group>"; };
+		9BDFBFEA1B1E9F4400C0A0AB /* TuringHeadView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TuringHeadView.swift; sourceTree = "<group>"; };
+		9BDFBFEC1B1EAC0600C0A0AB /* AddRuleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRuleViewController.swift; sourceTree = "<group>"; };
+		9BDFBFEE1B1ED79900C0A0AB /* TuringChallenge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TuringChallenge.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +93,12 @@
 			children = (
 				9BDFBFC51B1E76F200C0A0AB /* AppDelegate.swift */,
 				9BDFBFC71B1E76F200C0A0AB /* ViewController.swift */,
+				9BB4A68E1B1EDBBB002E3F4B /* TuringChallengeSelectorViewController.swift */,
+				9BDFBFEC1B1EAC0600C0A0AB /* AddRuleViewController.swift */,
+				9BDFBFE51B1E774800C0A0AB /* TuringMachine.swift */,
+				9BDFBFEE1B1ED79900C0A0AB /* TuringChallenge.swift */,
+				9BDFBFE81B1E8B5400C0A0AB /* TuringTapeView.swift */,
+				9BDFBFEA1B1E9F4400C0A0AB /* TuringHeadView.swift */,
 				9BDFBFC91B1E76F200C0A0AB /* Main.storyboard */,
 				9BDFBFCC1B1E76F200C0A0AB /* Images.xcassets */,
 				9BDFBFCE1B1E76F200C0A0AB /* LaunchScreen.xib */,
@@ -212,8 +232,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BDFBFEB1B1E9F4400C0A0AB /* TuringHeadView.swift in Sources */,
 				9BDFBFC81B1E76F200C0A0AB /* ViewController.swift in Sources */,
+				9BB4A68F1B1EDBBB002E3F4B /* TuringChallengeSelectorViewController.swift in Sources */,
+				9BDFBFE91B1E8B5400C0A0AB /* TuringTapeView.swift in Sources */,
 				9BDFBFC61B1E76F200C0A0AB /* AppDelegate.swift in Sources */,
+				9BDFBFEF1B1ED79900C0A0AB /* TuringChallenge.swift in Sources */,
+				9BDFBFED1B1EAC0600C0A0AB /* AddRuleViewController.swift in Sources */,
+				9BDFBFE61B1E774800C0A0AB /* TuringMachine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +247,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BDFBFE71B1E774800C0A0AB /* TuringMachine.swift in Sources */,
+				9BDFBFF01B1ED79900C0A0AB /* TuringChallenge.swift in Sources */,
 				9BDFBFDC1B1E76F200C0A0AB /* Play_TuringTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -411,6 +439,7 @@
 				9BDFBFE11B1E76F200C0A0AB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		9BDFBFE21B1E76F200C0A0AB /* Build configuration list for PBXNativeTarget "Play TuringTests" */ = {
 			isa = XCConfigurationList;
@@ -419,6 +448,7 @@
 				9BDFBFE41B1E76F200C0A0AB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

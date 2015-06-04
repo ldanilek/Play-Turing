@@ -26,6 +26,23 @@ class Play_TuringTests: XCTestCase {
         XCTAssert(true, "Pass")
     }
     
+    func testTuringMachine() {
+        let rule = Rule(state: 0, read: "1", newState: 1, write: blank, direction: .Right)
+        let rule2 = Rule(state: 1, read: "0", newState: 1, write: blank, direction: .Right)
+        let rule3 = Rule(movingDirection: .Left, state: 1, read: "1")
+        let rule4 = Rule(state: 1, read: blank, newState: 0, write: "1", direction: .Left)
+        
+        var machine = TuringMachine(rules: [rule, rule2, rule3, rule4], initialTape: ["1", "0", "0", "0", "0", "0", "1"])
+        
+        for var i = 0; i < 8; i++ {
+            machine.step()
+        }
+        assert(machine.state == 0, "end with state 0")
+        assert(machine.rulesUsed.count == 4, "used all 4 rules")
+        assert(machine.charsSeen.count == 3, "saw all 3 characters")
+        assert(machine.statesUsed.count == 2, "used two states")
+    }
+    
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measureBlock() {
