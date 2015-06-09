@@ -16,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        let time = UInt32(NSDate().timeIntervalSince1970)
+        srand(time)
         return true
     }
 

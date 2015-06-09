@@ -145,4 +145,24 @@ class TuringMachine: NSObject {
             return nil
         }
     }
+    
+    func solve(goalTape: Tape) -> Bool {
+        var iterations = 0
+        while iterations < 1000 {
+            if tape == goalTape {
+                return true
+            }
+            let ruleUsed = step()
+            if let rule = ruleUsed {
+                
+            } else {
+                return false
+            }
+            if index < 0 || index >= tape.count {
+                return false
+            }
+            iterations++
+        }
+        return false
+    }
 }

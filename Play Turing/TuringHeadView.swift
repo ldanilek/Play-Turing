@@ -12,8 +12,12 @@ class TuringHeadView: UIView {
     
     var stateView: UILabel!
     
-    func setState(state: Int) {
-        self.stateView.text = "q\(state)"
+    func setState(state: Int?) {
+        if let s = state {
+            self.stateView.text = "q\(s)"
+        } else {
+            self.stateView.text = " "
+        }
     }
 
     override init(frame: CGRect) {

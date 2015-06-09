@@ -13,11 +13,47 @@ protocol AddRuleDelegate {
     func cancelNewRule()
 }
 
-class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, TuringTapeViewDelegate {
     
     var delegate: AddRuleDelegate!
     var possibleCharacters: [Character]!
     var maxState: Int!
+    
+    func tapAtIndex(index: Int, forView view: TuringTapeView) {
+        if view.id == 1 {
+            if index == 0 {
+                setDirection(.Left)
+            } else if index == 2 {
+                setDirection(.Right)
+            }
+        }
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
+    func characterAtIndex(index: Int, forView view: TuringTapeView) -> String {
+        if view.id == 0 {
+            if index == 1 {
+                return String(self.readingCharacter)
+            } else {
+                return ""
+            }
+        } else {
+            if index == 1 {
+                return String(self.writeCharacter)
+            } else if (direction == Direction.Left ? 0 : 2) == index {
+                return ""
+            } else {
+                return "tap"
+            }
+        }
+    }
+    
+    func numberOfCharacters(forView view: TuringTapeView) -> Int {
+        return 3
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,37 +62,81 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
         // Do any additional setup after loading the view.
         self.startingStateStepper.value = Double(startingState)
         self.startingStateStepper.maximumValue = Double(maxState)
-        self.startingStateLabel.text = "q\(startingState)"
         
         self.endStateStepper.value = Double(endState)
         self.endStateStepper.maximumValue = Double(maxState)
-        self.endStateLabel.text = "q\(endState)"
+        if maxState == 0 {
+            self.endStateStepper.hidden = true
+            self.startingStateStepper.hidden = true
+        }
+        conditionTape = TuringTapeView(frame: CGRectZero, delegate: self, id: 0)
+        conditionTape.setTranslatesAutoresizingMaskIntoConstraints(false)
+        self.conditionTapeSuperview.addSubview(conditionTape)
+        view.addConstraint(NSLayoutConstraint(item: conditionTape, attribute: .Leading, relatedBy: .Equal, toItem: conditionTapeSuperview, attribute: .Leading, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: conditionTape, attribute: .Trailing, relatedBy: .Equal, toItem: conditionTapeSuperview, attribute: .Trailing, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: conditionTape, attribute: .Top, relatedBy: .Equal, toItem: conditionTapeSuperview, attribute: .Top, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: conditionTape, attribute: .Bottom, relatedBy: .Equal, toItem: conditionTapeSuperview, attribute: .Bottom, multiplier: 1, constant: 0))
+        
+        resultTape = TuringTapeView(frame: CGRectZero, delegate: self, id: 1)
+        self.resultTapeSuperview.addSubview(resultTape)
+        resultTape.setTranslatesAutoresizingMaskIntoConstraints(false)
+        view.addConstraint(NSLayoutConstraint(item: resultTape, attribute: .Leading, relatedBy: .Equal, toItem: resultTapeSuperview, attribute: .Leading, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: resultTape, attribute: .Trailing, relatedBy: .Equal, toItem: resultTapeSuperview, attribute: .Trailing, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: resultTape, attribute: .Top, relatedBy: .Equal, toItem: resultTapeSuperview, attribute: .Top, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: resultTape, attribute: .Bottom, relatedBy: .Equal, toItem: resultTapeSuperview, attribute: .Bottom, multiplier: 1, constant: 0))
+        
+        resultTapeSuperview.backgroundColor = TAPE_BG_COLOR
+        conditionTapeSuperview.backgroundColor = TAPE_BG_COLOR // don't want yellow showing through on rotate
+        
+        conditionTapeHead = TuringHeadView(frame: CGRectZero)
+        resultTapeHead = TuringHeadView(frame: CGRectZero)
+        conditionTapeHead.setTranslatesAutoresizingMaskIntoConstraints(false)
+        resultTapeHead.setTranslatesAutoresizingMaskIntoConstraints(false)
+        conditionTapeHead.setState(startingState)
+        resultTapeHead.setState(endState)
+        view.addSubview(conditionTapeHead)
+        view.addSubview(resultTapeHead)
+        view.addConstraint(NSLayoutConstraint(item: conditionTapeSuperview, attribute: .Bottom, relatedBy: .Equal, toItem: conditionTapeHead, attribute: .Top, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: resultTapeSuperview, attribute: .Bottom, relatedBy: .Equal, toItem: resultTapeHead, attribute: .Top, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: conditionTapeSuperview, attribute: .CenterX, relatedBy: .Equal, toItem: conditionTapeHead, attribute: .CenterX, multiplier: 1, constant: 0))
+        resultHeadConstraint = NSLayoutConstraint(item: resultTapeHead, attribute: .CenterX, relatedBy: .Equal, toItem: conditionTape.viewAtIndex(direction == .Left ? 0 : 2), attribute: .CenterX, multiplier: 1, constant: 0)
+        view.addConstraint(resultHeadConstraint)
+        
+        view.addConstraint(NSLayoutConstraint(item: conditionTapeHead, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: TAPE_HEAD_SIZE))
+        view.addConstraint(NSLayoutConstraint(item: conditionTapeHead, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: TAPE_HEAD_SIZE))
+        view.addConstraint(NSLayoutConstraint(item: resultTapeHead, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: TAPE_HEAD_SIZE))
+        view.addConstraint(NSLayoutConstraint(item: resultTapeHead, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: TAPE_HEAD_SIZE))
         
         self.readingCharPicker.selectRow(find(possibleCharacters, readingCharacter)!, inComponent: 0, animated: false)
         self.writingCharPicker.selectRow(find(possibleCharacters, writeCharacter)!, inComponent: 0, animated: false)
-        
-        self.directionControl.selectedSegmentIndex = direction == .Left ? 0 : 1
     }
     
     func cancel() {
         delegate.cancelNewRule()
     }
     
+    var resultHeadConstraint: NSLayoutConstraint!
+    
     var startingState: Int = 0
     @IBOutlet weak var startingStateStepper: UIStepper!
-    @IBOutlet weak var startingStateLabel: UILabel!
     @IBAction func startingStateChanged(sender: UIStepper) {
         self.startingState = Int(sender.value)
-        self.startingStateLabel.text = "q\(startingState)"
+        conditionTapeHead.setState(startingState)
     }
     
     var endState: Int = 0
     @IBOutlet weak var endStateStepper: UIStepper!
-    @IBOutlet weak var endStateLabel: UILabel!
     @IBAction func endStateChanged(sender: UIStepper) {
         self.endState = Int(sender.value)
-        self.endStateLabel.text = "q\(endState)"
+        resultTapeHead.setState(endState)
     }
+    @IBOutlet weak var conditionTapeSuperview: UIView!
+    var conditionTape: TuringTapeView!
+    @IBOutlet weak var resultTapeSuperview: UIView!
+    var resultTape: TuringTapeView!
+    
+    var conditionTapeHead: TuringHeadView!
+    var resultTapeHead: TuringHeadView!
     
     var readingCharacter: Character = b
     @IBOutlet weak var readingCharPicker: UIPickerView!
@@ -76,16 +156,24 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if pickerView == readingCharPicker {
             readingCharacter = possibleCharacters[row]
+            conditionTape.reload()
         } else {
             writeCharacter = possibleCharacters[row]
+            resultTape.reload()
         }
     }
     
     var direction: Direction = .Left
-    @IBAction func directionChanged(sender: UISegmentedControl) {
-        direction = sender.selectedSegmentIndex==0 ? .Left : .Right
+    func setDirection(d: Direction) {
+        direction = d
+        resultTape.reload()
+        view.removeConstraint(resultHeadConstraint)
+        resultHeadConstraint = NSLayoutConstraint(item: resultTapeHead, attribute: .CenterX, relatedBy: .Equal, toItem: resultTape.viewAtIndex(direction == .Left ? 0 : 2), attribute: .CenterX, multiplier: 1, constant: 0)
+        view.addConstraint(resultHeadConstraint)
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
+            self.view.layoutIfNeeded()
+        })
     }
-    @IBOutlet weak var directionControl: UISegmentedControl!
     
     
     var currentRule: Rule {

@@ -16,6 +16,8 @@ protocol TuringTapeViewDelegate {
 
 let LABELSEPARATION: CGFloat = 5
 
+let TAPE_BG_COLOR = UIColor(red: 0.7, green: 0.7, blue: 1, alpha: 1)
+
 class TuringTapeView: UIView {
     let delegate: TuringTapeViewDelegate
     let id: Int
@@ -23,6 +25,44 @@ class TuringTapeView: UIView {
     var charViews: [UILabel] = []
     
     var labelWidth: CGFloat!
+    
+    func addCharView() {
+        var newLabel = UILabel(frame: CGRectZero)
+        newLabel.textAlignment = NSTextAlignment.Center
+        newLabel.backgroundColor = TAPE_BG_COLOR
+        newLabel.layer.borderColor = UIColor.blueColor().CGColor
+        newLabel.layer.borderWidth = 2
+        newLabel.layer.masksToBounds = true
+        newLabel.userInteractionEnabled = true
+        newLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "tap:"))
+        //newLabel.layer.cornerRadius = 5
+        newLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+        self.addSubview(newLabel)
+        self.charViews.append(newLabel)
+    }
+    
+    func removeCharView() {
+        self.charViews.removeLast().removeFromSuperview()
+    }
+    
+    func resetAllConstraints() {
+        self.removeConstraints(self.constraints())
+        for var i = 0; i < self.charViews.count; i++ {
+            let label = self.charViews[i]
+            addConstraint(NSLayoutConstraint(item: self, attribute: .Top, relatedBy: .Equal, toItem: label, attribute: .Top, multiplier: 1, constant: 0))
+            addConstraint(NSLayoutConstraint(item: self, attribute: .Bottom, relatedBy: .Equal, toItem: label, attribute: .Bottom, multiplier: 1, constant: 0))
+            if i == self.charViews.count-1 {
+                addConstraint(NSLayoutConstraint(item: self, attribute: .Trailing, relatedBy: .Equal, toItem: label, attribute: .Trailing, multiplier: 1, constant: 0))
+            }
+            if i == 0 {
+                addConstraint(NSLayoutConstraint(item: self, attribute: .Leading, relatedBy: .Equal, toItem: label, attribute: .Leading, multiplier: 1, constant: 0))
+            } else {
+                let prevLabel = self.charViews[i-1]
+                addConstraint(NSLayoutConstraint(item: label, attribute: .Left, relatedBy: .Equal, toItem: prevLabel, attribute: .Right, multiplier: 1, constant: -2))
+                addConstraint(NSLayoutConstraint(item: label, attribute: .Width, relatedBy: .Equal, toItem: prevLabel, attribute: .Width, multiplier: 1, constant: 0))
+            }
+        }
+    }
     
     init(frame: CGRect, delegate: TuringTapeViewDelegate, id: Int) {
         self.delegate = delegate
@@ -35,34 +75,10 @@ class TuringTapeView: UIView {
         // n*LABELWIDTH + (n-1)*LABELSEPARATION = TOTALWIDTH
         labelWidth = (totalWidth-CGFloat(n-1)*LABELSEPARATION)/CGFloat(n)
         while n > self.charViews.count {
-            var newLabel = UILabel(frame: CGRectZero)
-            newLabel.textAlignment = NSTextAlignment.Center
-            newLabel.backgroundColor = UIColor(red: 0.7, green: 0.7, blue: 1, alpha: 1)
-            newLabel.layer.borderColor = UIColor.blueColor().CGColor
-            newLabel.layer.borderWidth = 2
-            newLabel.layer.masksToBounds = true
-            newLabel.userInteractionEnabled = true
-            newLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "tap:"))
-            //newLabel.layer.cornerRadius = 5
-            newLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
-            self.addSubview(newLabel)
-            self.charViews.append(newLabel)
+            self.addCharView()
         }
-        for var i = 0; i < self.charViews.count; i++ {
-            let label = self.charViews[i]
-            addConstraint(NSLayoutConstraint(item: self, attribute: .Top, relatedBy: .Equal, toItem: label, attribute: .Top, multiplier: 1, constant: 0))
-            addConstraint(NSLayoutConstraint(item: self, attribute: .Bottom, relatedBy: .Equal, toItem: label, attribute: .Bottom, multiplier: 1, constant: 0))
-            if i == 0 {
-                addConstraint(NSLayoutConstraint(item: self, attribute: .Leading, relatedBy: .Equal, toItem: label, attribute: .Leading, multiplier: 1, constant: 0))
-            } else {
-                let prevLabel = self.charViews[i-1]
-                if i == self.charViews.count-1 {
-                    addConstraint(NSLayoutConstraint(item: self, attribute: .Trailing, relatedBy: .Equal, toItem: label, attribute: .Trailing, multiplier: 1, constant: 0))
-                }
-                addConstraint(NSLayoutConstraint(item: label, attribute: .Left, relatedBy: .Equal, toItem: prevLabel, attribute: .Right, multiplier: 1, constant: -2))
-                addConstraint(NSLayoutConstraint(item: label, attribute: .Width, relatedBy: .Equal, toItem: prevLabel, attribute: .Width, multiplier: 1, constant: 0))
-            }
-        }
+        self.resetAllConstraints()
+        self.backgroundColor = TAPE_BG_COLOR
         
         self.reload()
     }
@@ -72,7 +88,19 @@ class TuringTapeView: UIView {
     }
     
     func reload() {
-        for var i = 0; i < self.charViews.count; i++ {
+        let n = delegate.numberOfCharacters(forView: self)
+        if n != self.charViews.count {
+            self.removeConstraints(self.constraints())
+            while self.charViews.count < n {
+                addCharView()
+            }
+            while self.charViews.count > n {
+                removeCharView()
+            }
+            resetAllConstraints()
+            self.layoutIfNeeded()
+        }
+        for var i = 0; i < n; i++ {
             charViews[i].text = String(delegate.characterAtIndex(i, forView: self))
         }
     }
