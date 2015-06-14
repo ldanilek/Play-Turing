@@ -77,8 +77,8 @@ class TuringChallengeSelectorViewController: UIViewController, TuringTapeViewDel
             self.view.addSubview(tape)
             self.view.addSubview(tapeHead)
             
-            tapeHead.addConstraint(NSLayoutConstraint(item: tapeHead, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: TAPE_HEAD_SIZE))
-            tapeHead.addConstraint(NSLayoutConstraint(item: tapeHead, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: TAPE_HEAD_SIZE))
+            tapeHead.addConstraint(NSLayoutConstraint(item: tapeHead, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: TAPE_HEAD_WIDTH))
+            tapeHead.addConstraint(NSLayoutConstraint(item: tapeHead, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: TAPE_HEAD_HEIGHT))
             tapeHead.setState(nil)
             view.addConstraint(NSLayoutConstraint(item: tapeHead, attribute: .Top, relatedBy: .Equal, toItem: tape, attribute: .Bottom, multiplier: 1, constant: 0))
             var headCenteringConstraint = NSLayoutConstraint(item: tapeHead, attribute: .CenterX, relatedBy: .Equal, toItem: tape, attribute: .CenterX, multiplier: 1, constant: 0)
@@ -174,12 +174,17 @@ class TuringChallengeSelectorViewController: UIViewController, TuringTapeViewDel
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-        let string = String(sender as! NSString)
-        let challengeIndex = NSNumberFormatter().numberFromString(string)!.integerValue
-        let dest = segue.destinationViewController as! ViewController
-        dest.challenge = TuringChallenge(index: challengeIndex)
+        if segue.identifier == "challenge" {
+            // Get the new view controller using segue.destinationViewController.
+            // Pass the selected object to the new view controller.
+            let string = String(sender as! NSString)
+            let challengeIndex = NSNumberFormatter().numberFromString(string)!.integerValue
+            let dest = segue.destinationViewController as! ViewController
+            dest.challenge = TuringChallenge(index: challengeIndex)
+        } else {
+            //let dest = segue.destinationViewController as!
+        }
+        
     }
     
 

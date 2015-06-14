@@ -38,15 +38,18 @@ class TuringHeadView: UIView {
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
+    
+    let headWidth: CGFloat = 20
+    let headHeight: CGFloat = 5.5
+    let yOffset: CGFloat = 2 // offset from top
+    
     override func drawRect(rect: CGRect) {
         // Drawing code
         var path = UIBezierPath()
-        path.moveToPoint(CGPointMake(frame.width/2, 2))
-        path.addLineToPoint(CGPointMake(frame.width/2-10, frame.height/4))
-        path.addLineToPoint(CGPointMake(frame.width/2+10, frame.height/4))
-        path.addLineToPoint(CGPointMake(frame.width/2, 2))
+        path.moveToPoint(CGPointMake(frame.width/2, yOffset))
+        path.addLineToPoint(CGPointMake(frame.width/2-headWidth/2, yOffset+headHeight))
+        path.addLineToPoint(CGPointMake(frame.width/2+headWidth/2, yOffset+headHeight))
+        path.addLineToPoint(CGPointMake(frame.width/2, yOffset))
         UIColor.blackColor().setFill()
         path.stroke()
     }

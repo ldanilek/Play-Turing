@@ -14,7 +14,9 @@ let RULE_SPACING: CGFloat = 5
 let TAPE_HEIGHT: CGFloat = 40
 let BUTTON_WIDTH: CGFloat = 60
 let TAPE_LABEL_HEIGHT: CGFloat = 25
-let TAPE_HEAD_SIZE: CGFloat = 30
+
+let TAPE_HEAD_HEIGHT: CGFloat = 30
+let TAPE_HEAD_WIDTH: CGFloat = 50
 
 class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate, UIGestureRecognizerDelegate {
     
@@ -27,7 +29,8 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
     
     var onscreen: Bool = false
     
-    var playButton: UIBarButtonItem!
+    var playButton: TuringButtonView!
+    var hintButton: UIBarButtonItem!
     var addRuleButton: UIBarButtonItem!
     var resetButton: UIBarButtonItem!
     var fastForwardButton: UIBarButtonItem!
@@ -52,6 +55,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         super.viewWillAppear(animated)
         resetButton.width = BUTTON_WIDTH
         addRuleButton.width = BUTTON_WIDTH
+        
         //self.navigationController?.toolbarHidden = true
     }
     
@@ -63,11 +67,23 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        self.title = challenge.name
-        playButton = UIBarButtonItem(title: "Play", style: UIBarButtonItemStyle.Plain, target: self, action: "play:")
+        hintButton = UIBarButtonItem(title: "Hint", style: UIBarButtonItemStyle.Plain, target: self, action: "hint:")
         resetButton = UIBarButtonItem(title: "Reset", style: UIBarButtonItemStyle.Plain, target: self, action: "reset:")
         addRuleButton = UIBarButtonItem(title: "Add Rule", style: UIBarButtonItemStyle.Plain, target: self, action: "addRule:")
-        self.toolbarItems = [addRuleButton, UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil), playButton, UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil), resetButton]
+        self.toolbarItems = [addRuleButton, UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil), hintButton, UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil), resetButton]
+        
+        playButton = TuringButtonView(frame: CGRectZero)
+        playButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+        view.addSubview(playButton)
+        let playButtonPadding: CGFloat = 5
+        let playButtonHeight: CGFloat = 40
+        addConstraint(playButton, at: .Leading, v2: view, at2: .Leading, c: playButtonPadding)
+        addConstraint(playButton, at: .Trailing, v2: view, at2: .Trailing, c: -playButtonPadding)
+        addConstraint(playButton, at: .Height, v2: nil, at2: .NotAnAttribute, c:playButtonHeight)
+        addConstraint(playButton, at: .Bottom, v2: self.bottomLayoutGuide, at2: .Top, c: -playButtonPadding)
+        playButton.action = { ()->Void in
+            self.play(self.playButton)
+        }
         
         fastForwardButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FastForward, target: self, action: "fastForward:")
         self.navigationItem.rightBarButtonItem = fastForwardButton
@@ -124,12 +140,12 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         addConstraint(tapeHeadView, at: .Top, v2: playTapeView, at2: .Bottom)
         addConstraint(tapeLabel, at: .Top, v2: goalTapeView, at2: .Bottom, c: 5)
         addConstraint(tapeLabel, at: .Bottom, v2: playTapeView, at2: .Top, c: 0)
-        addConstraint(tapeHeadView, at: .Width, v2: nil, at2: .NotAnAttribute, c: TAPE_HEAD_SIZE)
-        addConstraint(tapeHeadView, at: .Height, v2: nil, at2: .NotAnAttribute, c: TAPE_HEAD_SIZE)
+        addConstraint(tapeHeadView, at: .Width, v2: nil, at2: .NotAnAttribute, c: TAPE_HEAD_WIDTH)
+        addConstraint(tapeHeadView, at: .Height, v2: nil, at2: .NotAnAttribute, c: TAPE_HEAD_HEIGHT)
         headViewConstraint = NSLayoutConstraint(item: tapeHeadView, attribute: .CenterX, relatedBy: .Equal, toItem: playTapeView, attribute: .CenterX, multiplier: 1, constant: 0)
         view.addConstraint(headViewConstraint)
         
-        addConstraint(ruleScrollView, at: .Bottom, v2: self.bottomLayoutGuide, at2: .Top)
+        addConstraint(ruleScrollView, at: .Bottom, v2: playButton, at2: .Top, c: -playButtonPadding)
         addConstraint(tapeHeadView, at: .Bottom, v2: ruleScrollView, at2: .Top)
         addConstraint(ruleScrollView, at: .Leading, v2: view, at2: .Leading)
         addConstraint(ruleScrollView, at: .Trailing, v2: view, at2: .Trailing)
@@ -146,12 +162,31 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         self.reset()
     }
     
+    func boughtHints() -> Bool {
+        return TuringSettings.sharedInstance.hintsUnlocked
+    }
+    
+    func hint(button: UIBarButtonItem) {
+        if challenge.hints.count == 0 {
+            flashAlert("You're on your own for this level")
+        } else if challenge.hintsAreFree || boughtHints() {
+            flashAlerts(challenge.hints)
+        } else {
+            flashAlerts("You can buy access to all hints in Settings")
+        }
+    }
+    
+    var speedTimes: Int = 1
+    
     func fastForward(button: UIBarButtonItem) {
         if stepDelay > 0.05 {
             stepDelay /= 2
+            speedTimes *= 2
         } else {
             stepDelay = 0.5
+            speedTimes = 1
         }
+        flashAlert("Fast forward: \(speedTimes)x speed")
         if let timerRunning = timer {
             let userInfo: AnyObject? = timerRunning.userInfo
             timerRunning.invalidate()
@@ -210,7 +245,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         newRuleLabel.layer.borderWidth = 1
         newRuleLabel.layer.borderColor = UIColor.blackColor().CGColor
         let d = rule.direction==Direction.Left ? "left" : "right"
-        newRuleLabel.text = "Read \(rule.read) in q\(rule.state) → write \(rule.write), set to q\(rule.newState), and go \(d)"
+        newRuleLabel.text = rule.preview
         let tap = UITapGestureRecognizer(target: self, action: "ruleTapped:")
         tap.delegate = self
         newRuleLabel.addGestureRecognizer(tap)
@@ -238,7 +273,9 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         if let wasRule = editingRule {
             editingRule = nil
             if wasRule != rule {
-                deleteRuleAtIndex(find(playMachine.rules, wasRule)!)
+                if let i = find(playMachine.rules, wasRule) {
+                    deleteRuleAtIndex(i)
+                }
             }
         }
         var indexToReplace: Int?
@@ -256,8 +293,8 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             indexToReplace = rules.count-1
         }
         resetWithRules(rules)
-        let d = rule.direction==Direction.Left ? "left" : "right"
-        ruleLabels[indexToReplace!].text = "Read \(rule.read) in q\(rule.state) → write \(rule.write), set to q\(rule.newState), and go \(d)"
+        
+        ruleLabels[indexToReplace!].text = rule.preview
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -352,7 +389,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
     }
     
     var timer: NSTimer?
-    func play(button: UIBarButtonItem) {
+    func play(button: TuringButtonView) {
         if button.title == "Pause" {
             self.timer?.invalidate()
             self.timer = nil
@@ -361,7 +398,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         }
         if playMachine.rules.count == 0 {
             if challenge.name=="Getting Started" {
-                flashAlerts("Your Turing Machine needs rules to run", "Rule you need: read \""+String(b)+"\"→ write \"1\"")
+                flashAlerts("Your Turing Machine needs rules to run", "Tap Hint if you're stuck")
             } else {
                 flashAlert("Your Turing Machine needs rules to run")
             }
@@ -383,7 +420,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
                 flashAlerts("Your rule didn't run; check its condition", "Tap to edit a rule; swipe left to delete it")
             }
             highlightRule(nil)
-            let button = timer.userInfo as! UIBarButtonItem
+            let button = timer.userInfo as! TuringButtonView
             button.title = "Play"
             button.enabled = false
             timer.invalidate()
@@ -403,9 +440,22 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             highlightRule(rule)
         } else if self.playMachine.rules.count > 0 {
             highlightRule(nil)
-            playButton.title = "Reset"
         }
         self.updateUI()
+    }
+    
+    func playStartingAlerts() {
+        if playMachine.rules.count == 0 {
+            if self.challenge.name == "Getting Started" {
+                flashAlerts("Your Turing Machine needs rules to run", "Tap Add Rule to get started")
+            } else if self.challenge.name == "Binary Counter" {
+                self.flashAlerts("Reload a few times to see the pattern", "You should get comfortable with binary")
+            } else if self.challenge.name == "Concise Condenser" {
+                self.flashAlerts("Same as before, but with only 3 states")
+            } else if self.challenge.name == "" {
+                self.flashAlerts("This is a dummy level", "Please report as a bug")
+            }
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -413,17 +463,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         
         if onscreen == false {
             onscreen = true
-            if self.challenge.name == "Getting Started" {
-                flashAlerts("Tap Play to get started")
-            } else if self.challenge.name == "Deletion" {
-                if playMachine.rules.count == 0 {
-                    flashAlert("Rule: Read \"1\", write \""+String(b)+"\", and move Left")
-                }
-            } else if self.challenge.name == "Alternator" {
-                if playMachine.rules.count == 0 {
-                    flashAlerts("Now you need two rules", "Alternate between states q0 and q1", "q0 means write \"0\", q1 means write \"1\"")
-                }
-            }
+            playStartingAlerts()
         } else {
             if self.challenge.name == "Getting Started" {
                 if playMachine.rules.count == 1 {
@@ -446,12 +486,6 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
     }
     
     func reset() {
-        /*
-        let rule = Rule(state: 0, read: "1", newState: 1, write: blank, direction: .Right)
-        let rule2 = Rule(state: 1, read: "0", newState: 1, write: blank, direction: .Right)
-        let rule3 = Rule(movingDirection: .Left, state: 1, read: "1")
-        let rule4 = Rule(state: 1, read: blank, newState: 0, write: "1", direction: .Left)
-*/
         if let rules = challenge?.storedRules() {
             //println("found rules")
             resetWithRules(rules)
@@ -462,6 +496,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
     }
     
     func resetWithRules(rules: [Rule]) {
+        self.title = challenge.name
         challenge.storeRules(rules)
         //println("new rules")
         timer?.invalidate()
@@ -507,7 +542,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             if alertTexts.count > 0 {
                 self.flashAlerts(alertTexts, offset: offset+40)
             }
-            UIView.animateWithDuration(1, animations: { () -> Void in
+            UIView.animateWithDuration(4, animations: { () -> Void in
                 label.transform = CGAffineTransformMakeScale(1.03, 1.03)
                 }, completion: { (a) -> Void in
                     UIView.animateWithDuration(3, animations: { () -> Void in
@@ -520,11 +555,35 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         }
     }
     
-    func reloadChallenge() {
-        self.challenge = TuringChallenge(index: self.challenge.index)
+    func loadNextChallenge() {
+        let rulesBefore = playMachine.rules
+        while ruleLabels.count > 0 {
+            deleteRuleAtIndex(0)
+        }
+        self.challenge.storeRules(rulesBefore)
+        reloadChallenge(index: self.challenge.index+1)
+        if playMachine.rules.count == 0 {
+            playStartingAlerts()
+        }
+    }
+    
+    func reloadChallenge(var index: Int! = nil) {
+        if index == nil {
+            index = self.challenge.index
+        }
+        self.challenge = TuringChallenge(index: index)
         self.reset()
         if self.challenge.name == "Bit flipper" {
             self.flashAlert("Try out your machine on a different tape")
+        }
+    }
+    
+    func calculateAccuracy(andThen callback: Double->Void) {
+        NSOperationQueue().addOperationWithBlock { () -> Void in
+            let accuracy = TuringChallenge.challengeAccuracy(forIndex: self.challenge.index)
+            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                callback(accuracy)
+            }
         }
     }
     
@@ -542,11 +601,22 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             timer?.invalidate()
             timer = nil
             playButton.title = "Reset"
-            var alert = UIAlertController(title: "You Win", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Yay!", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
-                self.reloadChallenge()
-            }))
-            self.presentViewController(alert, animated: true, completion: nil)
+            self.calculateAccuracy(andThen: { (accuracy) -> Void in
+                let percentage =  Int(round(accuracy*100))
+                var alert = UIAlertController(title: "Challenge completed with accuracy \(percentage)%", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "Play Again", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+                    self.reloadChallenge()
+                }))
+                alert.addAction(UIAlertAction(title: "Select Level", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+                    self.navigationController?.popViewControllerAnimated(true)
+                }))
+                if self.challenge.index < MAX_CHALLENGE_INDEX {
+                    alert.addAction(UIAlertAction(title: "Next Level", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+                        self.loadNextChallenge()
+                    }))
+                }
+                self.presentViewController(alert, animated: true, completion: nil)
+            })
             return
         }
         if indexToMoveTo < 0 || indexToMoveTo >= playMachine.tape.count {

@@ -41,6 +41,10 @@ struct Rule: Hashable {
     var hashValue: Int {
         return 31 &* state.hashValue &+ read.hashValue
     }
+    var preview: String {
+        let d = direction==Direction.Left ? "left" : "right"
+        return "Read \(read) in q\(state) → write \(write), set to q\(newState), and go \(d)"
+    }
     // returns plist
     func storable() -> AnyObject {
         var dict = NSMutableDictionary()
@@ -152,13 +156,13 @@ class TuringMachine: NSObject {
             if tape == goalTape {
                 return true
             }
+            if index < 0 || index >= tape.count {
+                return false
+            }
             let ruleUsed = step()
             if let rule = ruleUsed {
                 
             } else {
-                return false
-            }
-            if index < 0 || index >= tape.count {
                 return false
             }
             iterations++

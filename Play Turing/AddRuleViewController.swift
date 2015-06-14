@@ -19,6 +19,8 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     var possibleCharacters: [Character]!
     var maxState: Int!
     
+    @IBOutlet weak var rulePreviewLabel: UILabel!
+    
     func tapAtIndex(index: Int, forView view: TuringTapeView) {
         if view.id == 1 {
             if index == 0 {
@@ -27,10 +29,24 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
                 setDirection(.Right)
             }
         }
+        if index == 1 {
+            let pickerView = view.id == 0 ? self.readingCharPicker : self.writingCharPicker
+            let row = (pickerView.selectedRowInComponent(0)+1)%self.pickerView(pickerView, numberOfRowsInComponent: 0)
+            pickerView.selectRow(row, inComponent: 0, animated: true)
+            self.pickerView(pickerView, didSelectRow: row, inComponent: 0)
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        self.readingCharPicker.selectRow(self.possibleCharacters.count-1, inComponent: 0, animated: false)
+        self.writingCharPicker.selectRow(self.possibleCharacters.count-1, inComponent: 0, animated: false)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        self.readingCharPicker.selectRow(find(possibleCharacters, readingCharacter) ?? 0, inComponent: 0, animated: true)
+        self.writingCharPicker.selectRow(find(possibleCharacters, writeCharacter) ?? 0, inComponent: 0, animated: true)
     }
     
     func characterAtIndex(index: Int, forView view: TuringTapeView) -> String {
@@ -56,6 +72,9 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     }
 
     override func viewDidLoad() {
+        readingCharacter = possibleCharacters[find(possibleCharacters, readingCharacter) ?? 0]
+        writeCharacter = possibleCharacters[find(possibleCharacters, writeCharacter) ?? 0]
+        
         super.viewDidLoad()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancel")
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: "save")
@@ -102,13 +121,38 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
         resultHeadConstraint = NSLayoutConstraint(item: resultTapeHead, attribute: .CenterX, relatedBy: .Equal, toItem: conditionTape.viewAtIndex(direction == .Left ? 0 : 2), attribute: .CenterX, multiplier: 1, constant: 0)
         view.addConstraint(resultHeadConstraint)
         
-        view.addConstraint(NSLayoutConstraint(item: conditionTapeHead, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: TAPE_HEAD_SIZE))
-        view.addConstraint(NSLayoutConstraint(item: conditionTapeHead, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: TAPE_HEAD_SIZE))
-        view.addConstraint(NSLayoutConstraint(item: resultTapeHead, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: TAPE_HEAD_SIZE))
-        view.addConstraint(NSLayoutConstraint(item: resultTapeHead, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: TAPE_HEAD_SIZE))
+        view.addConstraint(NSLayoutConstraint(item: conditionTapeHead, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: TAPE_HEAD_WIDTH))
+        view.addConstraint(NSLayoutConstraint(item: conditionTapeHead, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: TAPE_HEAD_HEIGHT))
+        view.addConstraint(NSLayoutConstraint(item: resultTapeHead, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: TAPE_HEAD_WIDTH))
+        view.addConstraint(NSLayoutConstraint(item: resultTapeHead, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: TAPE_HEAD_HEIGHT))
         
-        self.readingCharPicker.selectRow(find(possibleCharacters, readingCharacter)!, inComponent: 0, animated: false)
-        self.writingCharPicker.selectRow(find(possibleCharacters, writeCharacter)!, inComponent: 0, animated: false)
+        self.readingCharPicker.selectRow(find(possibleCharacters, readingCharacter) ?? 0, inComponent: 0, animated: false)
+        self.writingCharPicker.selectRow(find(possibleCharacters, writeCharacter) ?? 0, inComponent: 0, animated: false)
+        
+        self.resultTapeHead.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: "swipeHead:"))
+        self.resultTapeHead.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "tapResultState:"))
+        self.conditionTapeHead.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "tapConditionState:"))
+    }
+    
+    func tapResultState(tap: UITapGestureRecognizer) {
+        self.endStateStepper.value = Double((Int(self.endStateStepper.value) + 1) % (self.maxState + 1))
+        self.endStateChanged(endStateStepper)
+    }
+    
+    func tapConditionState(tap: UITapGestureRecognizer) {
+        self.startingStateStepper.value = Double((Int(self.startingStateStepper.value) + 1) % (self.maxState + 1))
+        self.startingStateChanged(startingStateStepper)
+    }
+    
+    func swipeHead(pan: UIPanGestureRecognizer) {
+        if direction == .Left && pan.translationInView(pan.view!).x > 10 {
+            setDirection(.Right)
+            pan.setTranslation(CGPointZero, inView: pan.view)
+        }
+        if direction == .Right && pan.translationInView(pan.view!).x < -10 {
+            setDirection(.Left)
+            pan.setTranslation(CGPointZero, inView: pan.view)
+        }
     }
     
     func cancel() {
@@ -117,14 +161,22 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     
     var resultHeadConstraint: NSLayoutConstraint!
     
-    var startingState: Int = 0
+    var startingState: Int = 0 {
+        didSet {
+            rulePreviewLabel?.text = currentRule.preview
+        }
+    }
     @IBOutlet weak var startingStateStepper: UIStepper!
     @IBAction func startingStateChanged(sender: UIStepper) {
         self.startingState = Int(sender.value)
         conditionTapeHead.setState(startingState)
     }
     
-    var endState: Int = 0
+    var endState: Int = 0 {
+        didSet {
+            rulePreviewLabel?.text = currentRule.preview
+        }
+    }
     @IBOutlet weak var endStateStepper: UIStepper!
     @IBAction func endStateChanged(sender: UIStepper) {
         self.endState = Int(sender.value)
@@ -138,10 +190,18 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     var conditionTapeHead: TuringHeadView!
     var resultTapeHead: TuringHeadView!
     
-    var readingCharacter: Character = b
+    var readingCharacter: Character = b {
+        didSet {
+            rulePreviewLabel?.text = currentRule.preview
+        }
+    }
     @IBOutlet weak var readingCharPicker: UIPickerView!
     
-    var writeCharacter: Character = b
+    var writeCharacter: Character = b {
+        didSet {
+            rulePreviewLabel?.text = currentRule.preview
+        }
+    }
     @IBOutlet weak var writingCharPicker: UIPickerView!
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
@@ -163,7 +223,11 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
         }
     }
     
-    var direction: Direction = .Left
+    var direction: Direction = .Left {
+        didSet {
+            rulePreviewLabel?.text = currentRule.preview
+        }
+    }
     func setDirection(d: Direction) {
         direction = d
         resultTape.reload()
