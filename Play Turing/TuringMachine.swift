@@ -13,6 +13,9 @@ typealias Tape = [Character]
 enum Direction {
     case Left
     case Right
+    var opposite: Direction {
+        return self == .Left ? .Right : .Left
+    }
 }
 typealias Callback = (Rule, State, Tape, Int) -> Void
 func emptyCallback(rule: Rule, state: State, tape: Tape, index: Int) {}
@@ -67,6 +70,7 @@ struct Rule: Hashable {
 
 let blank: Character = "-"
 let b = blank
+let endState = -1
 
 class TuringMachine: NSObject {
     let bounded: Bool
@@ -150,10 +154,14 @@ class TuringMachine: NSObject {
         }
     }
     
-    func solve(goalTape: Tape) -> Bool {
+    func solve(goalTape: Tape, finalStateMustBe: Int?) -> Bool {
         var iterations = 0
         while iterations < 1000 {
-            if tape == goalTape {
+            if let finalState = finalStateMustBe {
+                if tape == goalTape && state == finalState {
+                    return true
+                }
+            } else if tape == goalTape {
                 return true
             }
             if index < 0 || index >= tape.count {

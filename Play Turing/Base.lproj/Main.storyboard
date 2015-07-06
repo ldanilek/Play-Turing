@@ -33,20 +33,32 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="efn-2J-ZF6">
-                                <rect key="frame" x="16" y="110" width="568" height="438"/>
+                                <rect key="frame" x="16" y="148" width="568" height="400"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V7c-aM-Anx">
+                                <rect key="frame" x="304" y="110" width="280" height="30"/>
+                                <state key="normal" title="Restore Purchase">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="restorePurchase:" destination="fjM-oz-Y7t" eventType="touchUpInside" id="AFk-2z-gUa"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="cVa-q0-EwH" firstAttribute="leading" secondItem="V7c-aM-Anx" secondAttribute="leading" id="2FU-eq-coV"/>
                             <constraint firstItem="cVa-q0-EwH" firstAttribute="width" secondItem="Yat-0F-FZP" secondAttribute="width" id="2Ny-WW-xa7"/>
                             <constraint firstItem="cVa-q0-EwH" firstAttribute="centerY" secondItem="Yat-0F-FZP" secondAttribute="centerY" constant="0.5" id="6oa-OG-eN7"/>
-                            <constraint firstItem="efn-2J-ZF6" firstAttribute="top" secondItem="cVa-q0-EwH" secondAttribute="bottom" constant="8" id="8fQ-Ze-gAp"/>
+                            <constraint firstItem="V7c-aM-Anx" firstAttribute="top" secondItem="cVa-q0-EwH" secondAttribute="bottom" constant="8" id="E7m-CI-p8s"/>
                             <constraint firstItem="cVa-q0-EwH" firstAttribute="top" secondItem="tDR-dK-hAu" secondAttribute="bottom" constant="8" id="Gls-WX-Ht3"/>
+                            <constraint firstItem="cVa-q0-EwH" firstAttribute="trailing" secondItem="V7c-aM-Anx" secondAttribute="trailing" id="IYf-3h-bZg"/>
                             <constraint firstItem="o2Y-Ti-XX2" firstAttribute="top" secondItem="efn-2J-ZF6" secondAttribute="bottom" constant="8" id="TOu-PR-gwN"/>
+                            <constraint firstItem="efn-2J-ZF6" firstAttribute="top" secondItem="V7c-aM-Anx" secondAttribute="bottom" constant="8" id="TyP-pp-rTU"/>
                             <constraint firstItem="efn-2J-ZF6" firstAttribute="leading" secondItem="PxU-cc-QY6" secondAttribute="leadingMargin" id="XHY-6V-EnF"/>
                             <constraint firstItem="cVa-q0-EwH" firstAttribute="leading" secondItem="Yat-0F-FZP" secondAttribute="trailing" constant="8" id="de0-7F-20P"/>
                             <constraint firstItem="cVa-q0-EwH" firstAttribute="trailing" secondItem="PxU-cc-QY6" secondAttribute="trailingMargin" id="dsj-EZ-whz"/>
@@ -56,6 +68,7 @@
                     </view>
                     <connections>
                         <outlet property="aboutTextView" destination="efn-2J-ZF6" id="uOz-dd-ulU"/>
+                        <outlet property="restorePurchaseButton" destination="V7c-aM-Anx" id="ykq-sU-fMP"/>
                         <outlet property="unlockHintsButton" destination="cVa-q0-EwH" id="3lA-UG-YCO"/>
                     </connections>
                 </viewController>

@@ -8,10 +8,10 @@
 
 import UIKit
 
-let RULE_HEIGHT: CGFloat = 40
+let RULE_HEIGHT: CGFloat = 28
 let RULE_SPACING: CGFloat = 5
 
-let TAPE_HEIGHT: CGFloat = 40
+let TAPE_HEIGHT: CGFloat = 28//chosen because this is the height of the selection of a state. previously 40
 let BUTTON_WIDTH: CGFloat = 60
 let TAPE_LABEL_HEIGHT: CGFloat = 25
 
@@ -113,7 +113,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         view.addSubview(goalLabel)
         
         var tapeLabel = UILabel(frame: CGRectZero)
-        tapeLabel.text = "Turing Machine"
+        tapeLabel.text = "Your Turing Machine"
         tapeLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
         view.addSubview(tapeLabel)
         
@@ -129,7 +129,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         addConstraint(playTapeView, at: .Leading, v2: view, at2: .Leading)
         addConstraint(playTapeView, at: .Trailing, v2: view, at2: .Trailing)
         //addConstraint(backButton, at: .Trailing, v2: view, at2: .Trailing)
-        addConstraint(goalLabel, at: .Top, v2: self.topLayoutGuide, at2: .Bottom, c: 0)
+        addConstraint(tapeLabel, at: .Top, v2: self.topLayoutGuide, at2: .Bottom, c: 5) // some buffer to top
         addConstraint(goalTapeView, at: .Top, v2: goalLabel, at2: .Bottom)
         addConstraint(goalTapeView, at: .Height, v2: nil, at2: .NotAnAttribute, c: TAPE_HEIGHT)
         //addConstraint(goalLabel, at: .CenterY, v2: backButton, at2: .CenterY)
@@ -138,7 +138,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         //addConstraint(playTapeView, at: .Top, v2: goalTapeView, at2: .Bottom)
         addConstraint(playTapeView, at: .Height, v2: goalTapeView, at2: .Height)
         addConstraint(tapeHeadView, at: .Top, v2: playTapeView, at2: .Bottom)
-        addConstraint(tapeLabel, at: .Top, v2: goalTapeView, at2: .Bottom, c: 5)
+        addConstraint(goalLabel, at: .Top, v2: tapeHeadView, at2: .Bottom, c: 5)
         addConstraint(tapeLabel, at: .Bottom, v2: playTapeView, at2: .Top, c: 0)
         addConstraint(tapeHeadView, at: .Width, v2: nil, at2: .NotAnAttribute, c: TAPE_HEAD_WIDTH)
         addConstraint(tapeHeadView, at: .Height, v2: nil, at2: .NotAnAttribute, c: TAPE_HEAD_HEIGHT)
@@ -146,7 +146,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         view.addConstraint(headViewConstraint)
         
         addConstraint(ruleScrollView, at: .Bottom, v2: playButton, at2: .Top, c: -playButtonPadding)
-        addConstraint(tapeHeadView, at: .Bottom, v2: ruleScrollView, at2: .Top)
+        addConstraint(goalTapeView, at: .Bottom, v2: ruleScrollView, at2: .Top)
         addConstraint(ruleScrollView, at: .Leading, v2: view, at2: .Leading)
         addConstraint(ruleScrollView, at: .Trailing, v2: view, at2: .Trailing)
         
@@ -172,7 +172,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         } else if challenge.hintsAreFree || boughtHints() {
             flashAlerts(challenge.hints)
         } else {
-            flashAlerts("You can buy access to all hints in Settings")
+            flashAlerts("Buy access to all hints in Settings")
         }
     }
     
@@ -207,7 +207,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         let ruleForCurrentState = playMachine.ruleToUse()
         if let rule = ruleForCurrentState {
             
-        } else {
+        } else if playMachine.state <= challenge.maxState {
             editingRule = Rule(movingDirection: .Left, state: playMachine.state, read: playMachine.read())
         }
         self.performSegueWithIdentifier("addrule", sender: sender)
@@ -231,6 +231,8 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             dest.delegate = self
             dest.possibleCharacters = challenge.allowedCharacters
             dest.maxState = challenge.maxState
+            dest.hasFinalState = challenge.requiresEndState
+            dest.tapeLength = challenge.goalTape.count
         }
     }
     
@@ -419,6 +421,9 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             if playMachine.rules.count == 1 && playMachine.rulesUsed.count == 0 {
                 flashAlerts("Your rule didn't run; check its condition", "Tap to edit a rule; swipe left to delete it")
             }
+            if playMachine.tape == challenge.goalTape && challenge.requiresEndState {
+                flashAlerts("This challenge requires an end-state", "You must finish in q\(challenge.maxState+1)")
+            }
             highlightRule(nil)
             let button = timer.userInfo as! TuringButtonView
             button.title = "Play"
@@ -570,12 +575,12 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
     func reloadChallenge(var index: Int! = nil) {
         if index == nil {
             index = self.challenge.index
+            if self.challenge.name == "Bit flipper" {
+                self.flashAlert("Try out your machine on a different tape")
+            }
         }
         self.challenge = TuringChallenge(index: index)
         self.reset()
-        if self.challenge.name == "Bit flipper" {
-            self.flashAlert("Try out your machine on a different tape")
-        }
     }
     
     func calculateAccuracy(andThen callback: Double->Void) {
@@ -596,7 +601,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             newRuleLabelWithRule(playMachine.rules[ruleLabels.count])
         }
         
-        if playMachine.tape == challenge.goalTape {
+        if playMachine.tape == challenge.goalTape && (!challenge.requiresEndState || playMachine.state > challenge.maxState) {
             // win
             timer?.invalidate()
             timer = nil
@@ -620,8 +625,12 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             return
         }
         if indexToMoveTo < 0 || indexToMoveTo >= playMachine.tape.count {
-            if challenge.index < 5 {
+            if challenge.goalTape == playMachine.tape && challenge.requiresEndState {
+                flashAlerts("This challenge requires an end-state", "You must finish in q\(challenge.maxState+1)")
+            } else if challenge.index < 5 {
                 flashAlerts("Stay on your section of tape", "Try moving the other direction")
+            } else if challenge.requiresEndState {
+                flashAlerts("Stay on your section of tape", "This challenge requires an end-state", "You must finish in q\(challenge.maxState+1)")
             } else {
                 flashAlert("Stay on your section of tape")
             }
@@ -633,6 +642,9 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         }
         func animate() {
             self.view.layoutIfNeeded()
+            for var i = 0; i < challenge.startTape.count; i++ {
+                playTapeView.viewColorChange(i, newColor: i==playMachine.index ? TAPE_SELECTED_COLOR : TAPE_BG_COLOR)
+            }
         }
         if onscreen {
             UIView.animateWithDuration(stepDelay, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: animate, completion: nil)

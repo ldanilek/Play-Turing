@@ -22,22 +22,26 @@ class TuringSettingsViewController: UIViewController {
         }
     }
     @IBAction func restorePurchase(sender: UIButton) {
-        self.restorePurchaseButton?.enabled = false
-        self.restorePurchaseButton?.setTitle("Restoring...", forState: .Normal)
+        //
+        //self.restorePurchaseButton?.setTitle("Restoring...", forState: .Normal)
         TuringSettings.sharedInstance.restoreHints {
             if TuringSettings.sharedInstance.hintsUnlocked {
+                self.restorePurchaseButton?.enabled = false
                 self.restorePurchaseButton?.setTitle("Restored", forState: .Normal)
-            } else {
-                self.restorePurchaseButton?.setTitle("Not Restored", forState: .Normal)
+                self.unlockHintsButton.enabled = false
+                self.unlockHintsButton.setTitle("Bought", forState: .Normal)
             }
         }
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        aboutTextView.editable = false
         unlockHintsButton.setTitle("Loading Price...", forState: .Normal)
         unlockHintsButton.enabled = false
         if TuringSettings.sharedInstance.hintsUnlocked {
             self.unlockHintsButton.setTitle("Bought", forState: .Normal)
+            self.restorePurchaseButton?.enabled = false
+            //self.restorePurchaseButton?.setTitle("", forState: <#UIControlState#>)
         } else {
             TuringSettings.sharedInstance.getHintsPriceString {
                 if let price = TuringSettings.sharedInstance.hintsPriceString {

@@ -18,18 +18,34 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     var delegate: AddRuleDelegate!
     var possibleCharacters: [Character]!
     var maxState: Int!
+    var hasFinalState: Bool = false
+    var tapeLength = 0
     
     @IBOutlet weak var rulePreviewLabel: UILabel!
     
+    func viewIndexForDirection(d: Direction? = nil) -> Int {
+        let dir = d ?? direction
+        if tapeLength > 1 {
+            return dir == .Left ? 0 : 2;
+        }
+        return 0
+    }
+    var centerIndex: Int {
+        return tapeLength > 1 ? 1 : 0
+    }
+    
     func tapAtIndex(index: Int, forView view: TuringTapeView) {
-        if view.id == 1 {
-            if index == 0 {
-                setDirection(.Left)
-            } else if index == 2 {
-                setDirection(.Right)
+        if tapeLength > 1 {
+            if view.id == 1 {
+                // goal tape tapped to change direction
+                if index == 0 {
+                    setDirection(.Left)
+                } else if index == 2 {
+                    setDirection(.Right)
+                }
             }
         }
-        if index == 1 {
+        if (index == 1 && tapeLength > 1) || tapeLength == 1 {
             let pickerView = view.id == 0 ? self.readingCharPicker : self.writingCharPicker
             let row = (pickerView.selectedRowInComponent(0)+1)%self.pickerView(pickerView, numberOfRowsInComponent: 0)
             pickerView.selectRow(row, inComponent: 0, animated: true)
@@ -51,15 +67,15 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     
     func characterAtIndex(index: Int, forView view: TuringTapeView) -> String {
         if view.id == 0 {
-            if index == 1 {
+            if index == 1 || tapeLength == 1 {
                 return String(self.readingCharacter)
             } else {
                 return ""
             }
         } else {
-            if index == 1 {
+            if index == 1 || tapeLength == 1 {
                 return String(self.writeCharacter)
-            } else if (direction == Direction.Left ? 0 : 2) == index {
+            } else if viewIndexForDirection() == index {
                 return ""
             } else {
                 return "tap"
@@ -68,7 +84,7 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     }
     
     func numberOfCharacters(forView view: TuringTapeView) -> Int {
-        return 3
+        return tapeLength > 1 ? 3 : 1
     }
 
     override func viewDidLoad() {
@@ -82,8 +98,13 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
         self.startingStateStepper.value = Double(startingState)
         self.startingStateStepper.maximumValue = Double(maxState)
         
+        if hasFinalState {
+            self.endStateStepper.maximumValue = Double(maxState+1)
+        } else {
+            self.endStateStepper.maximumValue = Double(maxState)
+        }
         self.endStateStepper.value = Double(endState)
-        self.endStateStepper.maximumValue = Double(maxState)
+        
         if maxState == 0 {
             self.endStateStepper.hidden = true
             self.startingStateStepper.hidden = true
@@ -118,7 +139,7 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
         view.addConstraint(NSLayoutConstraint(item: conditionTapeSuperview, attribute: .Bottom, relatedBy: .Equal, toItem: conditionTapeHead, attribute: .Top, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: resultTapeSuperview, attribute: .Bottom, relatedBy: .Equal, toItem: resultTapeHead, attribute: .Top, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: conditionTapeSuperview, attribute: .CenterX, relatedBy: .Equal, toItem: conditionTapeHead, attribute: .CenterX, multiplier: 1, constant: 0))
-        resultHeadConstraint = NSLayoutConstraint(item: resultTapeHead, attribute: .CenterX, relatedBy: .Equal, toItem: conditionTape.viewAtIndex(direction == .Left ? 0 : 2), attribute: .CenterX, multiplier: 1, constant: 0)
+        resultHeadConstraint = NSLayoutConstraint(item: resultTapeHead, attribute: .CenterX, relatedBy: .Equal, toItem: conditionTape.viewAtIndex(viewIndexForDirection()), attribute: .CenterX, multiplier: 1, constant: 0)
         view.addConstraint(resultHeadConstraint)
         
         view.addConstraint(NSLayoutConstraint(item: conditionTapeHead, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: TAPE_HEAD_WIDTH))
@@ -132,6 +153,9 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
         self.resultTapeHead.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: "swipeHead:"))
         self.resultTapeHead.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "tapResultState:"))
         self.conditionTapeHead.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "tapConditionState:"))
+        
+        conditionTape.viewColorChange(centerIndex, newColor: TAPE_SELECTED_COLOR)
+        resultTape?.viewColorChange(viewIndexForDirection(), newColor: TAPE_SELECTED_COLOR)
     }
     
     func tapResultState(tap: UITapGestureRecognizer) {
@@ -145,6 +169,9 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     }
     
     func swipeHead(pan: UIPanGestureRecognizer) {
+        if tapeLength == 1 {
+            return
+        }
         if direction == .Left && pan.translationInView(pan.view!).x > 10 {
             setDirection(.Right)
             pan.setTranslation(CGPointZero, inView: pan.view)
@@ -231,8 +258,10 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     func setDirection(d: Direction) {
         direction = d
         resultTape.reload()
+        resultTape?.viewColorChange(viewIndexForDirection(d: d), newColor: TAPE_SELECTED_COLOR)
+        resultTape?.viewColorChange(viewIndexForDirection(d: d.opposite), newColor: TAPE_BG_COLOR)
         view.removeConstraint(resultHeadConstraint)
-        resultHeadConstraint = NSLayoutConstraint(item: resultTapeHead, attribute: .CenterX, relatedBy: .Equal, toItem: resultTape.viewAtIndex(direction == .Left ? 0 : 2), attribute: .CenterX, multiplier: 1, constant: 0)
+        resultHeadConstraint = NSLayoutConstraint(item: resultTapeHead, attribute: .CenterX, relatedBy: .Equal, toItem: resultTape.viewAtIndex(viewIndexForDirection()), attribute: .CenterX, multiplier: 1, constant: 0)
         view.addConstraint(resultHeadConstraint)
         UIView.animateWithDuration(0.5, animations: { () -> Void in
             self.view.layoutIfNeeded()

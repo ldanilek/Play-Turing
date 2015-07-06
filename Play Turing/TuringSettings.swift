@@ -75,6 +75,7 @@ public class TuringSettings: NSObject, SKProductsRequestDelegate, SKPaymentTrans
     public func paymentQueue(queue: SKPaymentQueue!, updatedTransactions transactions: [AnyObject]!) {
         for t in transactions {
             let transaction = t as! SKPaymentTransaction
+            println("Transaction in state \(transaction.transactionState.rawValue)")
             switch transaction.transactionState {
             case SKPaymentTransactionState.Failed:
                 doneHandler()

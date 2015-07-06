@@ -17,6 +17,7 @@ protocol TuringTapeViewDelegate {
 let LABELSEPARATION: CGFloat = 5
 
 let TAPE_BG_COLOR = UIColor(red: 0.7, green: 0.7, blue: 1, alpha: 1)
+let TAPE_SELECTED_COLOR = UIColor.greenColor()
 
 class TuringTapeView: UIView {
     let delegate: TuringTapeViewDelegate
@@ -29,7 +30,7 @@ class TuringTapeView: UIView {
     func addCharView() {
         var newLabel = UILabel(frame: CGRectZero)
         newLabel.textAlignment = NSTextAlignment.Center
-        newLabel.backgroundColor = TAPE_BG_COLOR
+        newLabel.layer.backgroundColor = TAPE_BG_COLOR.CGColor
         newLabel.layer.borderColor = UIColor.blueColor().CGColor
         newLabel.layer.borderWidth = 2
         newLabel.layer.masksToBounds = true
@@ -39,6 +40,42 @@ class TuringTapeView: UIView {
         newLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
         self.addSubview(newLabel)
         self.charViews.append(newLabel)
+    }
+    
+    // animatable
+    func viewColorChange(index: Int, newColor: UIColor) {
+        var label = self.charViews[index]
+        label.layer.backgroundColor = newColor.CGColor
+        //label.backgroundColor = newColor
+        /*var newCharView = UILabel()
+        var oldView = self.viewAtIndex(index) as! UILabel
+        newCharView.text = oldView.text
+        self.addSubview(newCharView)
+        newCharView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        addConstraint(NSLayoutConstraint(item: self, attribute: .Top, relatedBy: .Equal, toItem: newCharView, attribute: .Top, multiplier: 1, constant: 0))
+        addConstraint(NSLayoutConstraint(item: self, attribute: .Bottom, relatedBy: .Equal, toItem: newCharView, attribute: .Bottom, multiplier: 1, constant: 0))
+        if index == self.charViews.count - 1 {
+            addConstraint(NSLayoutConstraint(item: self, attribute: .Trailing, relatedBy: .Equal, toItem: newCharView, attribute: .Trailing, multiplier: 1, constant: 0))
+        } else {
+            var nextLabel = self.charViews[index+1]
+            addConstraint(NSLayoutConstraint(item: newCharView, attribute: .Width, relatedBy: .Equal, toItem: nextLabel, attribute: .Width, multiplier: 1, constant: 0))
+            addConstraint(NSLayoutConstraint(item: newCharView, attribute: .Right, relatedBy: .Equal, toItem: nextLabel, attribute: .Left, multiplier: 1, constant: 0))
+        }
+        if index == 0 {
+            addConstraint(NSLayoutConstraint(item: self, attribute: .Leading, relatedBy: .Equal, toItem: newCharView, attribute: .Leading, multiplier: 1, constant: 0))
+        } else {
+            let prevLabel = self.charViews[index-1]
+            addConstraint(NSLayoutConstraint(item: newCharView, attribute: .Left, relatedBy: .Equal, toItem: prevLabel, attribute: .Right, multiplier: 1, constant: -2))
+            addConstraint(NSLayoutConstraint(item: newCharView, attribute: .Width, relatedBy: .Equal, toItem: prevLabel, attribute: .Width, multiplier: 1, constant: 0))
+        }
+        
+        newCharView.alpha = 0
+        self.charViews[index] = newCharView
+        UIView.animateWithDuration(duration, animations: { () -> Void in
+            newCharView.alpha = 1
+        }) { (a) -> Void in
+            oldView.removeFromSuperview()
+        }*/
     }
     
     func removeCharView() {
@@ -78,7 +115,7 @@ class TuringTapeView: UIView {
             self.addCharView()
         }
         self.resetAllConstraints()
-        self.backgroundColor = TAPE_BG_COLOR
+        //self.backgroundColor = TAPE_BG_COLOR
         
         self.reload()
     }
