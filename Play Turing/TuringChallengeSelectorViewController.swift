@@ -66,6 +66,7 @@ class TuringChallengeSelectorViewController: UIViewController, TuringTapeViewDel
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Levels", style: UIBarButtonItemStyle.Plain, target: nil, action: "")
+        self.view.backgroundColor = VIEW_BACKGROUND_COLOR
         
         for var i = 0; i < levelLines; i++ {
             var tape = TuringTapeView(frame: CGRectZero, delegate: self, id: i)

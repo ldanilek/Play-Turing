@@ -191,13 +191,13 @@ class TuringChallenge: NSObject {
                 numberBits = makeTape(["0"], numberBits)
             }
             self.init(startTape: makeTape(numberBits, bt), goalTape: makeTape(subBits, bt), startIndex: 0, startState: 0, allowedCharacters: [b,"0","1"], maxState: 1, name: "Binary Add 1")
-            addHints("Base two subtraction", "Go to the right of the digits", "0→1, 1→0")
+            addHints("Base two addition", "Go to the right of the digits", "0→1, 1→0")
             requiresEndState = true
-        case 10:
+        /*case 10:
             self.init(startTape: [b,"1", "0", "1", "0", "0", "1", "1", b], goalTape: [b,b,b,b,"1","1","1","1", b], startIndex: 1, startState: 0, allowedCharacters: [b,"0", "1"], maxState: 3, name: "Condenser")
             addHints("Move ones over", "Replace the leftmost zeros")
-            requiresEndState = true
-        case 11:
+            requiresEndState = true*/
+        case 10:
             var tocondense: Tape = ["1"]
             var compressed: Tape = ["1"]
             while compressed.count == 0 || compressed.count == tocondense.count {
@@ -206,42 +206,45 @@ class TuringChallenge: NSObject {
                     return c=="1"
                 }
             }
-            self.init(startTape: makeTape(bt, tocondense, bt), goalTape: makeTape(bt, Array(count: tocondense.count-compressed.count, repeatedValue:b), compressed, bt), startIndex: 1, startState: 0, allowedCharacters: [b,"0", "1"], maxState: 2, name: "Concise Condenser")
+            self.init(startTape: makeTape(bt, tocondense, bt), goalTape: makeTape(bt, Array(count: tocondense.count-compressed.count, repeatedValue:b), compressed, bt), startIndex: 1, startState: 0, allowedCharacters: [b,"0", "1"], maxState: 2, name: "Compression")
             addHints("If a pair is out of order,", "Perform swaps of adjacents")
             requiresEndState = true
-        case 12:
+        case 11:
             let toDup = Array(count: Int(rand())%10 + 1, repeatedValue: Character("1"))
             let placeToPutDup = Array(count: toDup.count, repeatedValue: b)
             self.init(startTape: makeTape([toDup,bt,placeToPutDup]), goalTape: makeTape([toDup,bt,toDup]), startIndex: 0, startState: 0, allowedCharacters: [b, "1"], maxState: 4, name: "Duplicator")
             addHints("This example is on Wikipedia", "Move over one at a time", "Use blanks as placeholders")
             requiresEndState = true
-        case 13:
-            var toSort = Array<Character>(count: Int(rand())%10+5, fromArray: ["0","1","2"])
-            while toSort.filter({ (a) -> Bool in a=="1" }).count == 0 {
-                toSort = Array<Character>(count: Int(rand())%10+5, fromArray: ["0","1","2"])
+        case 12:
+            var toSort = Array<Character>()
+            var sorted = toSort
+            while toSort == sorted {
+                toSort = Array(count: Int(rand())%10+5, fromArray: ["0","1","2"])
+                sorted = toSort.sorted(<)
             }
-            let sorted = toSort.sorted(<)
             self.init(startTape: makeTape([bt,toSort, bt]), goalTape: makeTape([bt, sorted, bt]), startIndex: 1, startState: 0, allowedCharacters: [b, "0", "1", "2"], maxState: 4, name: "Sort")
             addHints("If a pair is out of order,", "Perform swaps of adjacents", "This is Insertion Sort")
             requiresEndState = true
-        case 14:
+        case 13:
             let ones = Array<Character>(count: Int(rand())%18+2, repeatedValue:"1")
             let modThree = Character("\(ones.count%3)")
             self.init(startTape: makeTape(bt, bt, ones), goalTape: makeTape([modThree], bt, bs(ones)), startIndex: ones.count+1, startState: 0, allowedCharacters: [b, "0", "1", "2"], maxState: 4, name: "Modulo 3")
             addHints("Carry each one over", "Increase left digit by one mod 3", "0→1, 1→2, 2→0")
             requiresEndState = true
-        case 15:
+        case 14:
             let ones = Array<Character>(count: Int(rand())%18+2, repeatedValue:"1")
             let countBits = intToBinary(ones.count)
             self.init(startTape: makeTape(bs(countBits), bt, ones), goalTape: makeTape(countBits, bt, ones), startIndex: ones.count+countBits.count, startState: 0, allowedCharacters: [b,"0","1"], maxState: 4, name: "Binary Counter")
             addHints("Carry ones over like in Duplicator", "Use binary to add to total count", "It's like regular numbers but 1+1=10")
             requiresEndState = true
-        case 16:
+        case 15:
             let ones = Array<Character>(count: Int(rand())%18+2, repeatedValue:"1")
             let countBits = intToBinary(ones.count)
             self.init(startTape: makeTape(bt, countBits, bt,Array<Character>(count: ones.count, repeatedValue: b)), goalTape: makeTape(bt, Array<Character>(count: countBits.count, repeatedValue: b), bt, ones), startIndex: countBits.count, startState: 0, allowedCharacters: [b,"0","1"], maxState: 4, name: "Inverse Counter")
             addHints("Subtract one using binary subtraction", "Transfer this one to the right")
             requiresEndState = true
+        
+            /*
         case 17:
             let randomBinary = Array(count: 8, generator: { () -> Character in
                 return ["0","1"].random
@@ -249,7 +252,8 @@ class TuringChallenge: NSObject {
             self.init(startTape: [b, "1"]+randomBinary, goalTape: ["1"]+randomBinary+["0"], startIndex: 9, startState: 1, allowedCharacters: [b, "0", "1"], maxState: 1, name: "Multiply by two")
             
             addHints("q1 means carry 0", "q0 means carry 1")
-        case 18:
+*/
+        case 16:
             let bits = Array<Character>(count: 8, fromArray: ["0","1"])
             let integer = binaryToInt(bits)
             let bitShift = Int(rand())%4 + 1
@@ -259,10 +263,10 @@ class TuringChallenge: NSObject {
             let rightPadding = Array<Character>(count: 3+bitShiftBits.count, repeatedValue: b)
             let start = makeTape(bt, bits, [">", ">"], bitShiftBits, bt)
             let end = makeTape(bt, padded, rightPadding)
-            self.init(startTape: start, goalTape: end, startIndex: 10+bitShiftBits.count, startState: 0, allowedCharacters: [b, "0", "1", ">"], maxState: 6, name: "Bit shifter")
+            self.init(startTape: start, goalTape: end, startIndex: 10+bitShiftBits.count, startState: 0, allowedCharacters: [b, "0", "1", ">"], maxState: 5, name: "Bit shifter")
             addHints("Subtract one from the right side", "Shift digits to the right")
             requiresEndState = true
-        case 19:
+        case 17:
             // for copier
             let toDuplicate: [Character] = Array<Character>(count: 6, fromArray:["0", "1"])
             let blanks: [Character] = Array(count: toDuplicate.count, repeatedValue: b)
@@ -272,7 +276,16 @@ class TuringChallenge: NSObject {
             self.init(startTape: duplicateStart, goalTape: duplicateGoal, startIndex: 1, startState: 0, allowedCharacters: [b, "0", "1", "x", "a", "b"], maxState: 4, name: "Copier")
             addHints("You have three spare characters", "Use x to separate original from copy", "Replace 0 with a, 1 with b")
             requiresEndState = true
-        case 20:
+        case 18:
+            var randomBinary = Array<Character>()
+            while randomBinary.filter({$0 == "1"}).count == 0 || randomBinary.filter({$0 == "0"}).count == 0 {
+                randomBinary = Array<Character>(count: 5, fromArray: ["0", "1"])
+            }
+            let flipped = randomBinary.reverse()
+            self.init(startTape: randomBinary+bs(randomBinary.count), goalTape: randomBinary+flipped, startIndex: 0, startState: 0, allowedCharacters: [b, "0", "1", "a"], maxState: 3, name: "Palindrome")
+            addHints("Replace 0→a, 1→\(b)", "Then move out from center")
+            
+        case 19:
             let len = rand()%2==0 ? 6 : 4
             let firstBits = Array<Character>(count: len, fromArray: ["0","1"])
             let nextBits = Array<Character>(count: len, fromArray: ["0","1"])
@@ -284,7 +297,7 @@ class TuringChallenge: NSObject {
             self.init(startTape: makeTape([firstBits,["^"],nextBits,["="],blanks]), goalTape: makeTape([blanks, bt, blanks, bt, xored]), startIndex: 0, startState: 0, allowedCharacters: [b, "0", "1", "^", "="], maxState: 5, name: "XOR")
             addHints("The title \"XOR\" means exclusive or", "XOR the first digits of each number", "Replace in left number with \(b)", "Replace in right number with ^")
             requiresEndState = true
-        case 21:
+        case 20:
             let oddNumber =  2*Int(rand()%4+2) + 1
             var countOnes = 0
             var bits = Array<Character>()
@@ -297,9 +310,10 @@ class TuringChallenge: NSObject {
                 }
             }
             let mode: Character = (countOnes*2 > oddNumber) ? "1" : "0"
-            self.init(startTape: makeTape([bt, bits, bt]), goalTape: makeTape([bt,Array(count: bits.count/2, repeatedValue: b),[mode],Array(count: bits.count/2, repeatedValue: b),bt]), startIndex: 1, startState: 0, allowedCharacters: [b,"0","1"], maxState: 6, name: "Mode")
+            self.init(startTape: makeTape([bt, bits, bt]), goalTape: makeTape([bt,Array(count: bits.count/2, repeatedValue: b),[mode],Array(count: bits.count/2, repeatedValue: b),bt]), startIndex: 1, startState: 0, allowedCharacters: [b,"0","1"], maxState: 8, name: "Mode")
             addHints("The title \"Mode\" is a statistics term", "You have an odd set of 0's and 1's", "Therefore, Mode = Median", "First sort, then remove extremes")
-        case 22:
+            requiresEndState = true
+        case 21:
             let first = Int(rand())%40 + 2
             let firstBits = intToBinary(first)
             let second = Int(rand())%40 + 2
@@ -311,6 +325,15 @@ class TuringChallenge: NSObject {
             self.init(startTape: makeTape([bt, firstBits, bt, neededExtra, secondBits, bt]), goalTape: makeTape([finalPad, sumBits, bt]), startIndex: firstBits.count, startState: 0, allowedCharacters: [b,"0","1"], maxState: 6, name: "Addition")
             addHints("Subtract one from the left number", "Add that one to the right number",  "There are two methods to subtract")
             //requiresEndState = true
+        case 22:
+            let first = Int(rand())%40 + 2
+            let firstBits = intToBinary(first)
+            let second = Int(rand())%40 + 2
+            let secondBits = intToBinary(second)
+            let ge: Character = first >= second ? "1" : "0"
+            
+            self.init(startTape: makeTape(bt, firstBits, ["≥"], secondBits, bt), goalTape: makeTape(bs(firstBits.count+1), [ge], bs(secondBits.count+1)), startIndex: firstBits.count+1, startState: 0, allowedCharacters: [b,"0", "1", "≥"], maxState: 6, name: "Greater than or equal")
+            requiresEndState = true
         case 23:
             let spacing = Int(rand())%8+2
             self.init(startTape: makeTape(["1"], bs(spacing),bt,bs(spacing), ["1"]), goalTape: makeTape(["1"], bs(spacing), ["1"], bs(spacing), ["1"]), startIndex: 0, startState: 0, allowedCharacters: [b, "0", "1"], maxState: 3, name: "Bisect")
@@ -329,7 +352,7 @@ class TuringChallenge: NSObject {
     }
     
     class func challengeAccuracy(forIndex index: Int) -> Double {
-        let dataPoints = 25
+        let dataPoints = 100
         var countSolvedTimes = 0
         for var i = 0; i < dataPoints; i++ {
             var challenge = TuringChallenge(index: index)

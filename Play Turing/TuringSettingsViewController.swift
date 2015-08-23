@@ -35,7 +35,9 @@ class TuringSettingsViewController: UIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = VIEW_BACKGROUND_COLOR
         aboutTextView.editable = false
+        aboutTextView.backgroundColor = VIEW_BACKGROUND_COLOR
         unlockHintsButton.setTitle("Loading Price...", forState: .Normal)
         unlockHintsButton.enabled = false
         if TuringSettings.sharedInstance.hintsUnlocked {

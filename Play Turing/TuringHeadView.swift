@@ -23,6 +23,7 @@ class TuringHeadView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         stateView = UILabel(frame: CGRectZero)
+        stateView.font = UIFont(name: MAIN_FONT_NAME, size: 20)
         stateView.setTranslatesAutoresizingMaskIntoConstraints(false)
         self.addSubview(stateView)
         addConstraint(NSLayoutConstraint(item: self, attribute: .Bottom, relatedBy: .Equal, toItem: stateView, attribute: .Bottom, multiplier: 1, constant: 0))
@@ -30,7 +31,7 @@ class TuringHeadView: UIView {
         addConstraint(NSLayoutConstraint(item: self, attribute: .Trailing, relatedBy: .Equal, toItem: stateView, attribute: .Trailing, multiplier: 1, constant: 0))
         addConstraint(NSLayoutConstraint(item: stateView, attribute: .Height, relatedBy: .Equal, toItem: self, attribute: .Height, multiplier: 0.75, constant: 0))
         stateView.textAlignment = .Center
-        self.backgroundColor = UIColor.whiteColor()
+        self.backgroundColor = VIEW_BACKGROUND_COLOR
         
     }
     
@@ -50,7 +51,7 @@ class TuringHeadView: UIView {
         path.addLineToPoint(CGPointMake(frame.width/2-headWidth/2, yOffset+headHeight))
         path.addLineToPoint(CGPointMake(frame.width/2+headWidth/2, yOffset+headHeight))
         path.addLineToPoint(CGPointMake(frame.width/2, yOffset))
-        UIColor.blackColor().setFill()
+        TEXT_COLOR.setFill()
         path.stroke()
     }
     

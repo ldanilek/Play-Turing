@@ -7,6 +7,8 @@
 //
 
 import UIKit
+let MAIN_FONT_NAME = "Menlo"//"Bangla Sangam MN"
+let RULE_FONT_SIZE: CGFloat = 13
 
 typealias State = Int
 typealias Tape = [Character]
@@ -44,9 +46,59 @@ struct Rule: Hashable {
     var hashValue: Int {
         return 31 &* state.hashValue &+ read.hashValue
     }
-    var preview: String {
-        let d = direction==Direction.Left ? "left" : "right"
-        return "Read \(read) in q\(state) → write \(write), set to q\(newState), and go \(d)"
+    func stringForState(state: State) -> NSAttributedString {
+        let s = "q\(state)"
+        var string = NSAttributedString(string: s, attributes: [NSFontAttributeName: UIFont(name: MAIN_FONT_NAME, size: RULE_FONT_SIZE)!])
+        return string
+    }
+    func stringForChar(char: Character) -> NSAttributedString {
+        var string = NSAttributedString(string: "\(char)", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(RULE_FONT_SIZE, weight: UIFontWeightBlack)])
+        return string
+    }
+    func stringForDirection() -> NSAttributedString {
+        let d = direction==Direction.Left ? "⬅︎" : "➡︎"
+        var string = NSAttributedString(string: d, attributes: [NSFontAttributeName: UIFont.systemFontOfSize(RULE_FONT_SIZE)])
+        return string
+    }
+    var preview: NSAttributedString {
+        let mainAttributes = [NSFontAttributeName: UIFont(name: MAIN_FONT_NAME, size: RULE_FONT_SIZE)!]
+        var str = NSMutableAttributedString(string: "Read ", attributes: mainAttributes)
+        let inStr = NSAttributedString(string: " in ", attributes: mainAttributes)
+        let arrow = NSAttributedString(string: " ⇒ ", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(RULE_FONT_SIZE)])
+        let move = NSAttributedString(string: "move ", attributes: mainAttributes)
+        let comma = NSAttributedString(string: ", ", attributes: mainAttributes)
+        let setTo = NSAttributedString(string: "set to ", attributes: mainAttributes)
+        let writeStr = NSAttributedString(string: "write ", attributes: mainAttributes)
+        
+        str.appendAttributedString(stringForChar(read))
+        str.appendAttributedString(inStr)
+        str.appendAttributedString(stringForState(state))
+        str.appendAttributedString(arrow)
+        
+        if newState == state {
+            if read == write {
+                str.appendAttributedString(move)
+            } else {
+                str.appendAttributedString(writeStr)
+                str.appendAttributedString(stringForChar(write))
+                str.appendAttributedString(comma)
+            }
+        } else {
+            if read == write {
+                str.appendAttributedString(setTo)
+                str.appendAttributedString(stringForState(newState))
+                str.appendAttributedString(comma)
+            } else {
+                str.appendAttributedString(writeStr)
+                str.appendAttributedString(stringForChar(write))
+                str.appendAttributedString(comma)
+                str.appendAttributedString(setTo)
+                str.appendAttributedString(stringForState(newState))
+                str.appendAttributedString(comma)
+            }
+        }
+        str.appendAttributedString(stringForDirection())
+        return str.copy() as! NSAttributedString
     }
     // returns plist
     func storable() -> AnyObject {

@@ -16,8 +16,16 @@ protocol TuringTapeViewDelegate {
 
 let LABELSEPARATION: CGFloat = 5
 
-let TAPE_BG_COLOR = UIColor(red: 0.7, green: 0.7, blue: 1, alpha: 1)
-let TAPE_SELECTED_COLOR = UIColor.greenColor()
+let TEAL_COLOR = UIColor(red: 35.0/255.0, green: 92.0/255.0, blue: 155.0/255.0, alpha: 1)
+let LIGHT_BLUE_COLOR = UIColor(red: 102.0/255.0, green: 180.0/255.0, blue: 214.0/255.0, alpha: 1)
+let NAVY_BLUE_COLOR = UIColor(red: 16.0/255.0, green: 27.0/255.0, blue: 78.0/255.0, alpha: 1)
+let OFF_WHITE_COLOR = UIColor(red: 196.0/255.0, green: 204.0/255.0, blue: 219.0/255.0, alpha: 1)
+
+let TAPE_BORDER_COLOR = LIGHT_BLUE_COLOR//UIColor(red: 49.0/255.0, green: 120.0/255.0, blue: 142.0/255.0, alpha: 1)//UIColor(red: 77.0/255.0, green: 188.0/255.0, blue: 202.0/255.0, alpha: 1)
+let TAPE_SELECTED_COLOR = NAVY_BLUE_COLOR//UIColor(white: 34.0/255.0, alpha: 1)//UIColor(red: 144.0/255.0, green: 230.0/255.0, blue: 255.0/255.0, alpha: 1)//UIColor.greenColor()
+let TAPE_BG_COLOR = TEAL_COLOR
+let TAPE_CHAR_COLOR = UIColor.whiteColor()
+
 
 class TuringTapeView: UIView {
     let delegate: TuringTapeViewDelegate
@@ -31,9 +39,11 @@ class TuringTapeView: UIView {
         var newLabel = UILabel(frame: CGRectZero)
         newLabel.textAlignment = NSTextAlignment.Center
         newLabel.layer.backgroundColor = TAPE_BG_COLOR.CGColor
-        newLabel.layer.borderColor = UIColor.blueColor().CGColor
+        newLabel.layer.borderColor = TAPE_BORDER_COLOR.CGColor
         newLabel.layer.borderWidth = 2
         newLabel.layer.masksToBounds = true
+        newLabel.textColor = TAPE_CHAR_COLOR
+        newLabel.font = UIFont.systemFontOfSize(newLabel.font.pointSize, weight: UIFontWeightBlack)
         newLabel.userInteractionEnabled = true
         newLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "tap:"))
         //newLabel.layer.cornerRadius = 5

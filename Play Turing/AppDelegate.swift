@@ -18,6 +18,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         let time = UInt32(NSDate().timeIntervalSince1970)
         srand(time)
+        var appearance = UINavigationBar.appearance()
+        var toolbarAppearance = UIToolbar.appearance()
+        let attributes = [NSForegroundColorAttributeName: TEXT_COLOR]
+        appearance.titleTextAttributes = attributes
+        appearance.tintColor = NAV_BUTTON_COLOR
+        appearance.barTintColor = NAV_BAR_COLOR
+        toolbarAppearance.tintColor = NAV_BUTTON_COLOR
+        toolbarAppearance.barTintColor = NAV_BAR_COLOR
         return true
     }
 

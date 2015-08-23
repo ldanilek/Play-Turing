@@ -8,6 +8,12 @@
 
 import UIKit
 
+//let MAIN_FONT_NAME = "Bangla Sangam MN"
+
+let VIEW_BACKGROUND_COLOR = UIColor.whiteColor()//UIColor(red: 1, green: 0.9, blue: 1, alpha: 1)
+let NAV_BUTTON_COLOR = UIColor.blueColor()
+let NAV_BAR_COLOR = UIColor.whiteColor()
+
 let RULE_HEIGHT: CGFloat = 28
 let RULE_SPACING: CGFloat = 5
 
@@ -17,6 +23,15 @@ let TAPE_LABEL_HEIGHT: CGFloat = 25
 
 let TAPE_HEAD_HEIGHT: CGFloat = 30
 let TAPE_HEAD_WIDTH: CGFloat = 50
+
+let RULE_HIGHLIGHT_COLOR = OFF_WHITE_COLOR//UIColor(red: 246.0/255.0, green: 199.0/255.0, blue: 94.0/255.0, alpha: 1)
+let RULE_BG_COLOR = LIGHT_BLUE_COLOR//UIColor(red: 1, green: 1, blue: 0.8, alpha: 1)
+let RULE_BORDER_COLOR = UIColor.blackColor()
+
+let TEXT_COLOR = UIColor(white: 0.2, alpha: 1)
+let ALERT_TEXT_COLOR = UIColor.redColor()
+let ALERT_BG_COLOR = UIColor.yellowColor()
+let ALERT_BORDER_COLOR = UIColor.blackColor()
 
 class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate, UIGestureRecognizerDelegate {
     
@@ -66,6 +81,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = VIEW_BACKGROUND_COLOR
         // Do any additional setup after loading the view, typically from a nib.
         hintButton = UIBarButtonItem(title: "Hint", style: UIBarButtonItemStyle.Plain, target: self, action: "hint:")
         resetButton = UIBarButtonItem(title: "Reset", style: UIBarButtonItemStyle.Plain, target: self, action: "reset:")
@@ -109,11 +125,13 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         */
         var goalLabel = UILabel(frame: CGRectZero)
         goalLabel.text = "Goal"
+        goalLabel.textColor = TEXT_COLOR
         goalLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
         view.addSubview(goalLabel)
         
         var tapeLabel = UILabel(frame: CGRectZero)
         tapeLabel.text = "Your Turing Machine"
+        tapeLabel.textColor = TEXT_COLOR
         tapeLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
         view.addSubview(tapeLabel)
         
@@ -186,7 +204,11 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             stepDelay = 0.5
             speedTimes = 1
         }
-        flashAlert("Fast forward: \(speedTimes)x speed")
+        if speedTimes > 1 {
+            flashAlert("Fast forward: \(speedTimes)x speed")
+        } else {
+            flashAlert("Normal speed")
+        }
         if let timerRunning = timer {
             let userInfo: AnyObject? = timerRunning.userInfo
             timerRunning.invalidate()
@@ -239,15 +261,16 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
     func newRuleLabelWithRule(rule: Rule) {
         let previousRuleLabel = ruleLabels.last
         var newRuleLabel = UILabel(frame: CGRectZero)
+        newRuleLabel.textColor = TEXT_COLOR
         newRuleLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
-        newRuleLabel.font = UIFont.systemFontOfSize(14)
         newRuleLabel.textAlignment = .Center
         newRuleLabel.userInteractionEnabled = true
         newRuleLabel.layer.cornerRadius = 5
         newRuleLabel.layer.borderWidth = 1
-        newRuleLabel.layer.borderColor = UIColor.blackColor().CGColor
+        newRuleLabel.layer.backgroundColor = RULE_BG_COLOR.CGColor
+        newRuleLabel.layer.borderColor = RULE_BORDER_COLOR.CGColor
         let d = rule.direction==Direction.Left ? "left" : "right"
-        newRuleLabel.text = rule.preview
+        newRuleLabel.attributedText = rule.preview
         let tap = UITapGestureRecognizer(target: self, action: "ruleTapped:")
         tap.delegate = self
         newRuleLabel.addGestureRecognizer(tap)
@@ -296,16 +319,16 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         }
         resetWithRules(rules)
         
-        ruleLabels[indexToReplace!].text = rule.preview
+        ruleLabels[indexToReplace!].attributedText = rule.preview
         self.dismissViewControllerAnimated(true, completion: nil)
     }
-    
+  
     func ruleTapped(tap: UITapGestureRecognizer) {
-        touchUp(tap.view!)
+        //touchUp(tap.view!)
         let index = find(self.ruleLabels, tap.view as! UILabel)!
         editRule(playMachine.rules[index])
     }
-    
+  
     func ruleSwiped(swipe: UISwipeGestureRecognizer) {
         let index = find(self.ruleLabels, swipe.view as! UILabel)!
         // delete rule at index
@@ -357,21 +380,21 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
                 labelToRemove.removeFromSuperview()
         }
     }
-    
+    /*
     func touchDown(view: UIView) {
         view.layer.backgroundColor = UIColor.blueColor().CGColor
     }
     func touchUp(view: UIView) {
         view.layer.backgroundColor = UIColor.whiteColor().CGColor
     }
-    
+    */
     func highlightRule(rule: Rule?) {
         UIView.animateWithDuration(stepDelay, animations: { () -> Void in
             for (index,possibleRule) in enumerate(self.playMachine.rules) {
                 if possibleRule == rule {
-                    self.ruleLabels[index].layer.backgroundColor = UIColor.yellowColor().CGColor
+                    self.ruleLabels[index].layer.backgroundColor = RULE_HIGHLIGHT_COLOR.CGColor
                 } else {
-                    self.ruleLabels[index].layer.backgroundColor = UIColor.whiteColor().CGColor
+                    self.ruleLabels[index].layer.backgroundColor = RULE_BG_COLOR.CGColor
                 }
             }
         })
@@ -399,11 +422,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             return
         }
         if playMachine.rules.count == 0 {
-            if challenge.name=="Getting Started" {
-                flashAlerts("Your Turing Machine needs rules to run", "Tap Hint if you're stuck")
-            } else {
-                flashAlert("Your Turing Machine needs rules to run")
-            }
+            flashAlerts("Your Turing Machine needs rules to run", "Tap Hint if you're stuck")
         } else {
             button.title="Pause"
             resetButton.title = "Reset"
@@ -455,8 +474,8 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
                 flashAlerts("Your Turing Machine needs rules to run", "Tap Add Rule to get started")
             } else if self.challenge.name == "Binary Counter" {
                 self.flashAlerts("Reload a few times to see the pattern", "You should get comfortable with binary")
-            } else if self.challenge.name == "Concise Condenser" {
-                self.flashAlerts("Same as before, but with only 3 states")
+            /*} else if self.challenge.name == "Concise Condenser" {
+                self.flashAlerts("Same as before, but with only 3 states")*/
             } else if self.challenge.name == "" {
                 self.flashAlerts("This is a dummy level", "Please report as a bug")
             }
@@ -477,6 +496,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             }
             
         }
+        self.ruleScrollView.flashScrollIndicators()
     }
     func numberOfCharacters(forView view: TuringTapeView) -> Int {
         return challenge.startTape.count
@@ -529,10 +549,12 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         let label = UILabel()
         label.setTranslatesAutoresizingMaskIntoConstraints(false)
         label.text = alertTexts.removeAtIndex(0)
-        label.textColor = UIColor.redColor()
-        label.backgroundColor = UIColor.yellowColor()
+        label.textColor = ALERT_TEXT_COLOR
+        label.backgroundColor = ALERT_BG_COLOR
         label.layer.cornerRadius = 12
         label.layer.masksToBounds = true
+        label.layer.borderColor = ALERT_BORDER_COLOR.CGColor
+        label.layer.borderWidth = 2
         label.textAlignment = NSTextAlignment.Center
         label.alpha = 0
         view.addSubview(label)
@@ -581,6 +603,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         }
         self.challenge = TuringChallenge(index: index)
         self.reset()
+        self.ruleScrollView.flashScrollIndicators()
     }
     
     func calculateAccuracy(andThen callback: Double->Void) {
@@ -605,7 +628,8 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             // win
             timer?.invalidate()
             timer = nil
-            playButton.title = "Reset"
+            playButton.title = "Play"
+            flashAlert("Testing on 100 random tapes...")
             self.calculateAccuracy(andThen: { (accuracy) -> Void in
                 let percentage =  Int(round(accuracy*100))
                 var alert = UIAlertController(title: "Challenge completed with accuracy \(percentage)%", message: nil, preferredStyle: UIAlertControllerStyle.Alert)

@@ -54,6 +54,7 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     }
     
     override func viewWillAppear(animated: Bool) {
+        self.view.backgroundColor = VIEW_BACKGROUND_COLOR
         super.viewWillAppear(animated)
         self.readingCharPicker.selectRow(self.possibleCharacters.count-1, inComponent: 0, animated: false)
         self.writingCharPicker.selectRow(self.possibleCharacters.count-1, inComponent: 0, animated: false)
@@ -190,7 +191,7 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     
     var startingState: Int = 0 {
         didSet {
-            rulePreviewLabel?.text = currentRule.preview
+            rulePreviewLabel?.attributedText = currentRule.preview
         }
     }
     @IBOutlet weak var startingStateStepper: UIStepper!
@@ -201,7 +202,7 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     
     var endState: Int = 0 {
         didSet {
-            rulePreviewLabel?.text = currentRule.preview
+            rulePreviewLabel?.attributedText = currentRule.preview
         }
     }
     @IBOutlet weak var endStateStepper: UIStepper!
@@ -219,14 +220,14 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     
     var readingCharacter: Character = b {
         didSet {
-            rulePreviewLabel?.text = currentRule.preview
+            rulePreviewLabel?.attributedText = currentRule.preview
         }
     }
     @IBOutlet weak var readingCharPicker: UIPickerView!
     
     var writeCharacter: Character = b {
         didSet {
-            rulePreviewLabel?.text = currentRule.preview
+            rulePreviewLabel?.attributedText = currentRule.preview
         }
     }
     @IBOutlet weak var writingCharPicker: UIPickerView!
@@ -252,7 +253,7 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
     
     var direction: Direction = .Left {
         didSet {
-            rulePreviewLabel?.text = currentRule.preview
+            rulePreviewLabel?.attributedText = currentRule.preview
         }
     }
     func setDirection(d: Direction) {
