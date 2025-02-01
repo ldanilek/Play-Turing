@@ -10,47 +10,51 @@ import UIKit
 
 class TuringSettingsViewController: UIViewController {
 
-    @IBAction func unlockAllHints(sender: UIButton) {
-        self.unlockHintsButton.enabled = false
-        self.unlockHintsButton.setTitle("Buying...", forState: .Normal)
+    @IBAction func unlockAllHints(_ sender: UIButton) {
+        self.unlockHintsButton.isEnabled = false
+        self.unlockHintsButton.setTitle("Buying...", for: UIControlState())
         TuringSettings.sharedInstance.downloadHints {
             if TuringSettings.sharedInstance.hintsUnlocked {
-                self.unlockHintsButton.setTitle("Bought", forState: .Normal)
+                self.unlockHintsButton.setTitle("Bought", for: UIControlState())
             } else {
-                self.unlockHintsButton.setTitle("Buy Failed", forState: .Normal)
+                self.unlockHintsButton.setTitle("Buy Failed", for: UIControlState())
             }
         }
     }
-    @IBAction func restorePurchase(sender: UIButton) {
+    @IBAction func restorePurchase(_ sender: UIButton) {
         //
         //self.restorePurchaseButton?.setTitle("Restoring...", forState: .Normal)
         TuringSettings.sharedInstance.restoreHints {
             if TuringSettings.sharedInstance.hintsUnlocked {
-                self.restorePurchaseButton?.enabled = false
-                self.restorePurchaseButton?.setTitle("Restored", forState: .Normal)
-                self.unlockHintsButton.enabled = false
-                self.unlockHintsButton.setTitle("Bought", forState: .Normal)
+                self.restorePurchaseButton?.isEnabled = false
+                self.restorePurchaseButton?.setTitle("Restored", for: UIControlState())
+                self.unlockHintsButton.isEnabled = false
+                self.unlockHintsButton.setTitle("Bought", for: UIControlState())
             }
         }
     }
+    @IBAction func buttonPressed(_ sender: AnyObject) {
+        _ = self.navigationController?.popViewController(animated: true)
+    }
+    @IBOutlet weak var mybutton: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = VIEW_BACKGROUND_COLOR
-        aboutTextView.editable = false
+        aboutTextView.isEditable = false
         aboutTextView.backgroundColor = VIEW_BACKGROUND_COLOR
-        unlockHintsButton.setTitle("Loading Price...", forState: .Normal)
-        unlockHintsButton.enabled = false
+        unlockHintsButton.setTitle("Loading Price...", for: UIControlState())
+        unlockHintsButton.isEnabled = false
         if TuringSettings.sharedInstance.hintsUnlocked {
-            self.unlockHintsButton.setTitle("Bought", forState: .Normal)
-            self.restorePurchaseButton?.enabled = false
+            self.unlockHintsButton.setTitle("Bought", for: UIControlState())
+            self.restorePurchaseButton?.isEnabled = false
             //self.restorePurchaseButton?.setTitle("", forState: <#UIControlState#>)
         } else {
             TuringSettings.sharedInstance.getHintsPriceString {
                 if let price = TuringSettings.sharedInstance.hintsPriceString {
-                    self.unlockHintsButton.setTitle("Buy (\(price))", forState: .Normal)
-                    self.unlockHintsButton.enabled = true
+                    self.unlockHintsButton.setTitle("Buy (\(price))", for: UIControlState())
+                    self.unlockHintsButton.isEnabled = true
                 } else {
-                    self.unlockHintsButton.setTitle("No Connection", forState: .Normal)
+                    self.unlockHintsButton.setTitle("No Connection", for: UIControlState())
                 }
             }
         }
@@ -60,7 +64,7 @@ class TuringSettingsViewController: UIViewController {
 
     @IBOutlet weak var restorePurchaseButton: UIButton?
     @IBOutlet weak var unlockHintsButton: UIButton!
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setToolbarHidden(true, animated: false)
         super.viewWillAppear(animated)
     }

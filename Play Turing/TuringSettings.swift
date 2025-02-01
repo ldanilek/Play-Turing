@@ -13,8 +13,8 @@ let HINTS_ID = "playturinghints"
 let PRODUCT_IDS = Set<String>(arrayLiteral: HINTS_ID)
 let PRODUCT_REQUEST = SKProductsRequest(productIdentifiers: PRODUCT_IDS)
 
-public class TuringSettings: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
-    public class var sharedInstance: TuringSettings {
+open class TuringSettings: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
+    open class var sharedInstance: TuringSettings {
         struct Singleton {
             static let instance = TuringSettings()
         }
@@ -23,72 +23,72 @@ public class TuringSettings: NSObject, SKProductsRequestDelegate, SKPaymentTrans
     
     override init() {
         super.init()
-        SKPaymentQueue.defaultQueue().addTransactionObserver(self as SKPaymentTransactionObserver)
+        SKPaymentQueue.default().add(self as SKPaymentTransactionObserver)
     }
     
-    public var hintsUnlocked = NSUserDefaults.standardUserDefaults().boolForKey(HINTS_ID) {
+    open var hintsUnlocked = UserDefaults.standard.bool(forKey: HINTS_ID) {
         didSet {
-            NSUserDefaults.standardUserDefaults().setBool(hintsUnlocked, forKey: HINTS_ID)
-            NSUserDefaults.standardUserDefaults().synchronize()
+            UserDefaults.standard.set(hintsUnlocked, forKey: HINTS_ID)
+            UserDefaults.standard.synchronize()
         }
     }
     
-    public var hintsPriceString: String?
+    open var hintsPriceString: String?
     
-    private var doneHandler: Void->Void = {}
+    fileprivate var doneHandler: (Void)->Void = {}
     // in the done handler, check hintsPriceString
-    func getHintsPriceString(done: Void->Void) -> Void {
+    func getHintsPriceString(_ done: @escaping (Void)->Void) -> Void {
         doneHandler = done
         PRODUCT_REQUEST.delegate = self
         PRODUCT_REQUEST.start()
     }
     // call this only after getHintsPriceString's done handler has returned, and only if the price has been updated
     // in the done handler, check hintsUnlocked
-    func downloadHints(done: Void->Void) -> Void {
+    func downloadHints(_ done: @escaping (Void)->Void) -> Void {
         if let p = product {
             doneHandler = done
-            SKPaymentQueue.defaultQueue().addPayment(SKPayment(product: p))
+            SKPaymentQueue.default().add(SKPayment(product: p))
         }
     }
     
     //
-    func restoreHints(done: Void->Void) -> Void {
+    func restoreHints(_ done: @escaping (Void)->Void) -> Void {
         doneHandler = done
-        SKPaymentQueue.defaultQueue().restoreCompletedTransactions()
+        SKPaymentQueue.default().restoreCompletedTransactions()
     }
     
-    private var product: SKProduct!
-    public func productsRequest(request: SKProductsRequest!, didReceiveResponse response: SKProductsResponse!) {
-        product = response.products.last as! SKProduct
-        var priceFormatter = NSNumberFormatter()
-        priceFormatter.formatterBehavior = NSNumberFormatterBehavior.Behavior10_4
-        priceFormatter.numberStyle = NSNumberFormatterStyle.CurrencyStyle
+    fileprivate var product: SKProduct!
+    open func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
+        product = response.products.last!
+        let priceFormatter = NumberFormatter()
+        priceFormatter.formatterBehavior = NumberFormatter.Behavior.behavior10_4
+        priceFormatter.numberStyle = NumberFormatter.Style.currency
         priceFormatter.locale = product.priceLocale
-        hintsPriceString = priceFormatter.stringFromNumber(product.price)
+        hintsPriceString = priceFormatter.string(from: product.price)
         doneHandler()
     }
     
-    public func request(request: SKRequest!, didFailWithError error: NSError!) {
+    open func request(_ request: SKRequest, didFailWithError error: Error) {
         doneHandler()
     }
     
-    public func paymentQueue(queue: SKPaymentQueue!, updatedTransactions transactions: [AnyObject]!) {
+    open func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         for t in transactions {
-            let transaction = t as! SKPaymentTransaction
-            println("Transaction in state \(transaction.transactionState.rawValue)")
+            let transaction = t 
+            print("Transaction in state \(transaction.transactionState.rawValue)")
             switch transaction.transactionState {
-            case SKPaymentTransactionState.Failed:
+            case SKPaymentTransactionState.failed:
                 doneHandler()
-                SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+                SKPaymentQueue.default().finishTransaction(transaction)
                 break
-            case SKPaymentTransactionState.Restored:
+            case SKPaymentTransactionState.restored:
                 hintsUnlocked = true
                 doneHandler()
-                SKPaymentQueue.defaultQueue().finishTransaction(transaction)
-            case SKPaymentTransactionState.Purchased:
+                SKPaymentQueue.default().finishTransaction(transaction)
+            case SKPaymentTransactionState.purchased:
                 hintsUnlocked = true
                 doneHandler()
-                SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+                SKPaymentQueue.default().finishTransaction(transaction)
             default:
                 break
             }
@@ -98,18 +98,18 @@ public class TuringSettings: NSObject, SKProductsRequestDelegate, SKPaymentTrans
     
     
     var aboutText: NSAttributedString {
-        var mutableText = NSMutableAttributedString()
+        let mutableText = NSMutableAttributedString()
         let fontName = "Palatino-Roman"
-        var centeredParagaphStyle = NSMutableParagraphStyle()
-        centeredParagaphStyle.alignment = NSTextAlignment.Center
-        var leftParagraphStyle = NSMutableParagraphStyle()
+        let centeredParagaphStyle = NSMutableParagraphStyle()
+        centeredParagaphStyle.alignment = NSTextAlignment.center
+        let leftParagraphStyle = NSMutableParagraphStyle()
         leftParagraphStyle.firstLineHeadIndent = 20
-        leftParagraphStyle.alignment = .Left
-        let headerAttributes: [NSObject : AnyObject] = [NSFontAttributeName as String: UIFont(name: fontName, size: 20) as! AnyObject, NSParagraphStyleAttributeName as String: centeredParagaphStyle as AnyObject]
-        let bodyAttributes: [NSObject : AnyObject] = [NSFontAttributeName: UIFont(name: fontName, size: 15)!, NSParagraphStyleAttributeName: leftParagraphStyle]
+        leftParagraphStyle.alignment = .left
+        let headerAttributes: [String : AnyObject] = [NSFontAttributeName: UIFont(name: fontName, size: 20)!, NSParagraphStyleAttributeName: centeredParagaphStyle as AnyObject]
+        let bodyAttributes: [String : AnyObject] = [NSFontAttributeName: UIFont(name: fontName, size: 15)!, NSParagraphStyleAttributeName: leftParagraphStyle]
         
-        mutableText.appendAttributedString(NSAttributedString(string: "About Turing Machines", attributes: headerAttributes))
-        mutableText.appendAttributedString(NSAttributedString(string: "\n\nA turing machine is the ultimate hypothetical computer, but it operates under simple principles. It has some states (q0, q1, q2, ...) and it reads from a tape with some characters (-, 0, 1, ...).\n\nAt each step, the machine follows rules. Based on the current state and the current character, the machine knows what rule to use. The rule tells it to write a new character, go to a new state, and move left or right on the tape.\n\nUsing certain rules, a turing machine could do anything a supercomputer can do, but programming that machine would be a hassle. Some of the small procedures, like adding two numbers, are simple enough to program. Play Turing presents these simple programming challenges as levels, so the player can learn how Turing Machines work and develop algorithmic thinking.", attributes: bodyAttributes))
+        mutableText.append(NSAttributedString(string: "About Turing Machines", attributes: headerAttributes))
+        mutableText.append(NSAttributedString(string: "\n\nA turing machine is the ultimate hypothetical computer, but it operates under simple principles. It has some states (q0, q1, q2, ...) and it reads from a tape with some characters (-, 0, 1, ...).\n\nAt each step, the machine follows rules. Based on the current state and the current character, the machine knows what rule to use. The rule tells it to write a new character, go to a new state, and move left or right on the tape.\n\nUsing certain rules, a turing machine could do anything a supercomputer can do, but programming that machine would be a hassle. Some of the small procedures, like adding two numbers, are simple enough to program. Play Turing presents these simple programming challenges as levels, so the player can learn how Turing Machines work and develop algorithmic thinking.", attributes: bodyAttributes))
         
         return mutableText.copy() as! NSAttributedString
     }

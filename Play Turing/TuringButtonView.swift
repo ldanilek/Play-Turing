@@ -12,7 +12,7 @@ let DARK_ORANGE_COLOR = UIColor(red: 140.0/255.0, green: 63.0/255.0, blue: 28.0/
 let ORANGE_COLOR = UIColor(red: 232.0/255.0, green: 117.0/255.0, blue: 0, alpha: 1)
 
 let BUTTON_BG_COLOR = ORANGE_COLOR//UIColor.orangeColor()//UIColor(red: 0.3, green: 1, blue: 0.3, alpha: 1)
-let BUTTON_TEXT_COLOR = UIColor.whiteColor()
+let BUTTON_TEXT_COLOR = UIColor.white
 
 let BUTTON_FONT_SIZE: CGFloat = 25
 let BUTTON_FONT = UIFont(name: MAIN_FONT_NAME, size: BUTTON_FONT_SIZE)
@@ -45,14 +45,14 @@ class TuringButtonView: UIView {
     
     var action: ()->Void = {}
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        super.touchesBegan(touches, withEvent: event)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
         if enabled {
             pressed = true
         }
     }
     
-    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if enabled {
             pressed = false
             self.action()
@@ -64,21 +64,21 @@ class TuringButtonView: UIView {
         self.layer.cornerRadius = 8
         self.backgroundColor = BUTTON_BG_COLOR
         
-        self.userInteractionEnabled = true
-        label = UILabel(frame: CGRectZero)
+        self.isUserInteractionEnabled = true
+        label = UILabel(frame: CGRect.zero)
         addSubview(label)
-        label.setTranslatesAutoresizingMaskIntoConstraints(false)
-        label.textAlignment = NSTextAlignment.Center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = NSTextAlignment.center
         label.font = BUTTON_FONT
         label.textColor = BUTTON_TEXT_COLOR
-        addConstraint(NSLayoutConstraint(item: self, attribute: .Top, relatedBy: .Equal, toItem: label, attribute: .Top, multiplier: 1, constant: 0))
-        addConstraint(NSLayoutConstraint(item: self, attribute: .Bottom, relatedBy: .Equal, toItem: label, attribute: .Bottom, multiplier: 1, constant: 0))
-        addConstraint(NSLayoutConstraint(item: self, attribute: .Trailing, relatedBy: .Equal, toItem: label, attribute: .Trailing, multiplier: 1, constant: 0))
-        addConstraint(NSLayoutConstraint(item: self, attribute: .Leading, relatedBy: .Equal, toItem: label, attribute: .Leading, multiplier: 1, constant: 0))
+        addConstraint(NSLayoutConstraint(item: self, attribute: .top, relatedBy: .equal, toItem: label, attribute: .top, multiplier: 1, constant: 0))
+        addConstraint(NSLayoutConstraint(item: self, attribute: .bottom, relatedBy: .equal, toItem: label, attribute: .bottom, multiplier: 1, constant: 0))
+        addConstraint(NSLayoutConstraint(item: self, attribute: .trailing, relatedBy: .equal, toItem: label, attribute: .trailing, multiplier: 1, constant: 0))
+        addConstraint(NSLayoutConstraint(item: self, attribute: .leading, relatedBy: .equal, toItem: label, attribute: .leading, multiplier: 1, constant: 0))
         
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 

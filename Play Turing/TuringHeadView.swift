@@ -12,7 +12,7 @@ class TuringHeadView: UIView {
     
     var stateView: UILabel!
     
-    func setState(state: Int?) {
+    func setState(_ state: Int?) {
         if let s = state {
             self.stateView.text = "q\(s)"
         } else {
@@ -22,21 +22,21 @@ class TuringHeadView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        stateView = UILabel(frame: CGRectZero)
+        stateView = UILabel(frame: CGRect.zero)
         stateView.font = UIFont(name: MAIN_FONT_NAME, size: 20)
-        stateView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        stateView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(stateView)
-        addConstraint(NSLayoutConstraint(item: self, attribute: .Bottom, relatedBy: .Equal, toItem: stateView, attribute: .Bottom, multiplier: 1, constant: 0))
-        addConstraint(NSLayoutConstraint(item: self, attribute: .Leading, relatedBy: .Equal, toItem: stateView, attribute: .Leading, multiplier: 1, constant: 0))
-        addConstraint(NSLayoutConstraint(item: self, attribute: .Trailing, relatedBy: .Equal, toItem: stateView, attribute: .Trailing, multiplier: 1, constant: 0))
-        addConstraint(NSLayoutConstraint(item: stateView, attribute: .Height, relatedBy: .Equal, toItem: self, attribute: .Height, multiplier: 0.75, constant: 0))
-        stateView.textAlignment = .Center
+        addConstraint(NSLayoutConstraint(item: self, attribute: .bottom, relatedBy: .equal, toItem: stateView, attribute: .bottom, multiplier: 1, constant: 0))
+        addConstraint(NSLayoutConstraint(item: self, attribute: .leading, relatedBy: .equal, toItem: stateView, attribute: .leading, multiplier: 1, constant: 0))
+        addConstraint(NSLayoutConstraint(item: self, attribute: .trailing, relatedBy: .equal, toItem: stateView, attribute: .trailing, multiplier: 1, constant: 0))
+        addConstraint(NSLayoutConstraint(item: stateView, attribute: .height, relatedBy: .equal, toItem: self, attribute: .height, multiplier: 0.75, constant: 0))
+        stateView.textAlignment = .center
         self.backgroundColor = VIEW_BACKGROUND_COLOR
         
     }
     
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -44,13 +44,13 @@ class TuringHeadView: UIView {
     let headHeight: CGFloat = 5.5
     let yOffset: CGFloat = 2 // offset from top
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         // Drawing code
-        var path = UIBezierPath()
-        path.moveToPoint(CGPointMake(frame.width/2, yOffset))
-        path.addLineToPoint(CGPointMake(frame.width/2-headWidth/2, yOffset+headHeight))
-        path.addLineToPoint(CGPointMake(frame.width/2+headWidth/2, yOffset+headHeight))
-        path.addLineToPoint(CGPointMake(frame.width/2, yOffset))
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: frame.width/2, y: yOffset))
+        path.addLine(to: CGPoint(x: frame.width/2-headWidth/2, y: yOffset+headHeight))
+        path.addLine(to: CGPoint(x: frame.width/2+headWidth/2, y: yOffset+headHeight))
+        path.addLine(to: CGPoint(x: frame.width/2, y: yOffset))
         TEXT_COLOR.setFill()
         path.stroke()
     }

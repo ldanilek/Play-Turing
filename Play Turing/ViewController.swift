@@ -10,9 +10,9 @@ import UIKit
 
 //let MAIN_FONT_NAME = "Bangla Sangam MN"
 
-let VIEW_BACKGROUND_COLOR = UIColor.whiteColor()//UIColor(red: 1, green: 0.9, blue: 1, alpha: 1)
-let NAV_BUTTON_COLOR = UIColor.blueColor()
-let NAV_BAR_COLOR = UIColor.whiteColor()
+let VIEW_BACKGROUND_COLOR = UIColor.white//UIColor(red: 1, green: 0.9, blue: 1, alpha: 1)
+let NAV_BUTTON_COLOR = UIColor.blue
+let NAV_BAR_COLOR = UIColor.white
 
 let RULE_HEIGHT: CGFloat = 28
 let RULE_SPACING: CGFloat = 5
@@ -26,12 +26,12 @@ let TAPE_HEAD_WIDTH: CGFloat = 50
 
 let RULE_HIGHLIGHT_COLOR = OFF_WHITE_COLOR//UIColor(red: 246.0/255.0, green: 199.0/255.0, blue: 94.0/255.0, alpha: 1)
 let RULE_BG_COLOR = LIGHT_BLUE_COLOR//UIColor(red: 1, green: 1, blue: 0.8, alpha: 1)
-let RULE_BORDER_COLOR = UIColor.blackColor()
+let RULE_BORDER_COLOR = UIColor.black
 
 let TEXT_COLOR = UIColor(white: 0.2, alpha: 1)
-let ALERT_TEXT_COLOR = UIColor.redColor()
-let ALERT_BG_COLOR = UIColor.yellowColor()
-let ALERT_BORDER_COLOR = UIColor.blackColor()
+let ALERT_TEXT_COLOR = UIColor.red
+let ALERT_BG_COLOR = UIColor.yellow
+let ALERT_BORDER_COLOR = UIColor.black
 
 class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate, UIGestureRecognizerDelegate {
     
@@ -55,18 +55,18 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
     var rulesContainerHeight: NSLayoutConstraint!
     var ruleLabels: [UILabel] = []
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         //touchDown(gestureRecognizer.view!)
         return true
     }
     
-    func addConstraint(v: UIView, at: NSLayoutAttribute, v2: AnyObject?, at2: NSLayoutAttribute, c: CGFloat = 0) {
-        view.addConstraint(NSLayoutConstraint(item: v, attribute: at, relatedBy: .Equal, toItem: v2, attribute: at2, multiplier: 1, constant: c))
+    func addConstraint(_ v: UIView, at: NSLayoutAttribute, v2: AnyObject?, at2: NSLayoutAttribute, c: CGFloat = 0) {
+        view.addConstraint(NSLayoutConstraint(item: v, attribute: at, relatedBy: .equal, toItem: v2, attribute: at2, multiplier: 1, constant: c))
     }
     
     var headViewConstraint: NSLayoutConstraint!
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         resetButton.width = BUTTON_WIDTH
         addRuleButton.width = BUTTON_WIDTH
@@ -74,117 +74,123 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         //self.navigationController?.toolbarHidden = true
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         //self.navigationController?.toolbarHidden = false
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // required because I had to disable "extends under top bars", because
+        // the topLayoutGuide is set to the status bar during the transition otherwise
+        //self.navigationController?.navigationBar.backgroundColor = UIColor.white
         self.view.backgroundColor = VIEW_BACKGROUND_COLOR
         // Do any additional setup after loading the view, typically from a nib.
-        hintButton = UIBarButtonItem(title: "Hint", style: UIBarButtonItemStyle.Plain, target: self, action: "hint:")
-        resetButton = UIBarButtonItem(title: "Reset", style: UIBarButtonItemStyle.Plain, target: self, action: "reset:")
-        addRuleButton = UIBarButtonItem(title: "Add Rule", style: UIBarButtonItemStyle.Plain, target: self, action: "addRule:")
-        self.toolbarItems = [addRuleButton, UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil), hintButton, UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil), resetButton]
+        hintButton = UIBarButtonItem(title: "Hint", style: UIBarButtonItemStyle.plain, target: self, action: #selector(ViewController.hint(_:)))
+        resetButton = UIBarButtonItem(title: "Reset", style: UIBarButtonItemStyle.plain, target: self, action: #selector(ViewController.reset(_:)))
+        addRuleButton = UIBarButtonItem(title: "Add Rule", style: UIBarButtonItemStyle.plain, target: self, action: #selector(ViewController.addRule(_:)))
+        self.toolbarItems = [addRuleButton, UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil), hintButton, UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil), resetButton]
         
-        playButton = TuringButtonView(frame: CGRectZero)
-        playButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+        playButton = TuringButtonView(frame: CGRect.zero)
+        playButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(playButton)
         let playButtonPadding: CGFloat = 5
         let playButtonHeight: CGFloat = 40
-        addConstraint(playButton, at: .Leading, v2: view, at2: .Leading, c: playButtonPadding)
-        addConstraint(playButton, at: .Trailing, v2: view, at2: .Trailing, c: -playButtonPadding)
-        addConstraint(playButton, at: .Height, v2: nil, at2: .NotAnAttribute, c:playButtonHeight)
-        addConstraint(playButton, at: .Bottom, v2: self.bottomLayoutGuide, at2: .Top, c: -playButtonPadding)
+        addConstraint(playButton, at: .leading, v2: view, at2: .leading, c: playButtonPadding)
+        addConstraint(playButton, at: .trailing, v2: view, at2: .trailing, c: -playButtonPadding)
+        addConstraint(playButton, at: .height, v2: nil, at2: .notAnAttribute, c:playButtonHeight)
+        addConstraint(playButton, at: .bottom, v2: self.bottomLayoutGuide, at2: .top, c: -playButtonPadding)
         playButton.action = { ()->Void in
             self.play(self.playButton)
         }
         
-        fastForwardButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FastForward, target: self, action: "fastForward:")
+        fastForwardButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.fastForward, target: self, action: #selector(ViewController.fastForward(_:)))
         self.navigationItem.rightBarButtonItem = fastForwardButton
         
-        goalTapeView = TuringTapeView(frame: CGRectZero, delegate: self, id: 1)
-        playTapeView = TuringTapeView(frame: CGRectZero, delegate: self, id: 0)
+        goalTapeView = TuringTapeView(frame: CGRect.zero, delegate: self, id: 1)
+        playTapeView = TuringTapeView(frame: CGRect.zero, delegate: self, id: 0)
         self.view.addSubview(goalTapeView)
         self.view.addSubview(playTapeView)
         
-        tapeHeadView = TuringHeadView(frame: CGRectZero)
+        tapeHeadView = TuringHeadView(frame: CGRect.zero)
         self.view.addSubview(tapeHeadView)
         
-        ruleScrollView = UIScrollView(frame: CGRectZero)
+        ruleScrollView = UIScrollView(frame: CGRect.zero)
         self.view.addSubview(ruleScrollView)
-        rulesContainer = UIView(frame: CGRectZero)
+        rulesContainer = UIView(frame: CGRect.zero)
         ruleScrollView.addSubview(rulesContainer)
-        rulesContainer.setTranslatesAutoresizingMaskIntoConstraints(false)
+        rulesContainer.translatesAutoresizingMaskIntoConstraints = false
         /*
         var backButton = UIButton.buttonWithType(UIButtonType.System) as! UIButton
         backButton.setTitle("Give Up", forState: .Normal)
         backButton.addTarget(self, action: "giveUp", forControlEvents: .TouchUpInside)
         self.view.addSubview(backButton)
         */
-        var goalLabel = UILabel(frame: CGRectZero)
+        let goalLabel = UILabel(frame: CGRect.zero)
         goalLabel.text = "Goal"
         goalLabel.textColor = TEXT_COLOR
-        goalLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+        goalLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(goalLabel)
         
-        var tapeLabel = UILabel(frame: CGRectZero)
+        let tapeLabel = UILabel(frame: CGRect.zero)
         tapeLabel.text = "Your Turing Machine"
         tapeLabel.textColor = TEXT_COLOR
-        tapeLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+        tapeLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tapeLabel)
         
         //backButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        goalTapeView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        playTapeView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        tapeHeadView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        ruleScrollView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        goalTapeView.translatesAutoresizingMaskIntoConstraints = false
+        playTapeView.translatesAutoresizingMaskIntoConstraints = false
+        tapeHeadView.translatesAutoresizingMaskIntoConstraints = false
+        ruleScrollView.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addConstraint(NSLayoutConstraint(item: goalTapeView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: goalTapeView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: goalTapeView, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: goalTapeView, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.trailing, multiplier: 1, constant: 0))
         
-        addConstraint(playTapeView, at: .Leading, v2: view, at2: .Leading)
-        addConstraint(playTapeView, at: .Trailing, v2: view, at2: .Trailing)
+        addConstraint(playTapeView, at: .leading, v2: view, at2: .leading)
+        addConstraint(playTapeView, at: .trailing, v2: view, at2: .trailing)
         //addConstraint(backButton, at: .Trailing, v2: view, at2: .Trailing)
-        addConstraint(tapeLabel, at: .Top, v2: self.topLayoutGuide, at2: .Bottom, c: 5) // some buffer to top
-        addConstraint(goalTapeView, at: .Top, v2: goalLabel, at2: .Bottom)
-        addConstraint(goalTapeView, at: .Height, v2: nil, at2: .NotAnAttribute, c: TAPE_HEIGHT)
+        //let topGuide = self.topLayoutGuide as AnyObject?
+        
+        addConstraint(tapeLabel, at: .top, v2: self.topLayoutGuide, at2: .bottom, c: 5) // some buffer to top
+        addConstraint(goalTapeView, at: .top, v2: goalLabel, at2: .bottom)
+        addConstraint(goalTapeView, at: .height, v2: nil, at2: .notAnAttribute, c: TAPE_HEIGHT)
         //addConstraint(goalLabel, at: .CenterY, v2: backButton, at2: .CenterY)
-        addConstraint(goalLabel, at: .Height, v2: nil, at2: .NotAnAttribute, c: TAPE_LABEL_HEIGHT)
-        addConstraint(goalLabel, at: .CenterX, v2: view, at2: .CenterX)
+        addConstraint(goalLabel, at: .height, v2: nil, at2: .notAnAttribute, c: TAPE_LABEL_HEIGHT)
+        addConstraint(goalLabel, at: .centerX, v2: view, at2: .centerX)
         //addConstraint(playTapeView, at: .Top, v2: goalTapeView, at2: .Bottom)
-        addConstraint(playTapeView, at: .Height, v2: goalTapeView, at2: .Height)
-        addConstraint(tapeHeadView, at: .Top, v2: playTapeView, at2: .Bottom)
-        addConstraint(goalLabel, at: .Top, v2: tapeHeadView, at2: .Bottom, c: 5)
-        addConstraint(tapeLabel, at: .Bottom, v2: playTapeView, at2: .Top, c: 0)
-        addConstraint(tapeHeadView, at: .Width, v2: nil, at2: .NotAnAttribute, c: TAPE_HEAD_WIDTH)
-        addConstraint(tapeHeadView, at: .Height, v2: nil, at2: .NotAnAttribute, c: TAPE_HEAD_HEIGHT)
-        headViewConstraint = NSLayoutConstraint(item: tapeHeadView, attribute: .CenterX, relatedBy: .Equal, toItem: playTapeView, attribute: .CenterX, multiplier: 1, constant: 0)
+        addConstraint(playTapeView, at: .height, v2: goalTapeView, at2: .height)
+        addConstraint(tapeHeadView, at: .top, v2: playTapeView, at2: .bottom)
+        addConstraint(goalLabel, at: .top, v2: tapeHeadView, at2: .bottom, c: 5)
+        addConstraint(tapeLabel, at: .bottom, v2: playTapeView, at2: .top, c: 0)
+        addConstraint(tapeHeadView, at: .width, v2: nil, at2: .notAnAttribute, c: TAPE_HEAD_WIDTH)
+        addConstraint(tapeHeadView, at: .height, v2: nil, at2: .notAnAttribute, c: TAPE_HEAD_HEIGHT)
+        headViewConstraint = NSLayoutConstraint(item: tapeHeadView, attribute: .centerX, relatedBy: .equal, toItem: playTapeView, attribute: .centerX, multiplier: 1, constant: 0)
         view.addConstraint(headViewConstraint)
         
-        addConstraint(ruleScrollView, at: .Bottom, v2: playButton, at2: .Top, c: -playButtonPadding)
-        addConstraint(goalTapeView, at: .Bottom, v2: ruleScrollView, at2: .Top)
-        addConstraint(ruleScrollView, at: .Leading, v2: view, at2: .Leading)
-        addConstraint(ruleScrollView, at: .Trailing, v2: view, at2: .Trailing)
+        addConstraint(ruleScrollView, at: .bottom, v2: playButton, at2: .top, c: -playButtonPadding)
+        addConstraint(goalTapeView, at: .bottom, v2: ruleScrollView, at2: .top)
+        addConstraint(ruleScrollView, at: .leading, v2: view, at2: .leading)
+        addConstraint(ruleScrollView, at: .trailing, v2: view, at2: .trailing)
         
-        addConstraint(rulesContainer, at: .Leading, v2: ruleScrollView, at2: .Leading)
-        addConstraint(rulesContainer, at: .Trailing, v2: ruleScrollView, at2: .Trailing)
-        addConstraint(rulesContainer, at: .Top, v2: ruleScrollView, at2: .Top)
-        addConstraint(rulesContainer, at: .Bottom, v2: ruleScrollView, at2: .Bottom)
-        addConstraint(rulesContainer, at: .Width, v2: ruleScrollView, at2: .Width)
-        rulesContainerHeight = NSLayoutConstraint(item: rulesContainer, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 50)
+        addConstraint(rulesContainer, at: .leading, v2: ruleScrollView, at2: .leading)
+        addConstraint(rulesContainer, at: .trailing, v2: ruleScrollView, at2: .trailing)
+        addConstraint(rulesContainer, at: .top, v2: ruleScrollView, at2: .top)
+        addConstraint(rulesContainer, at: .bottom, v2: ruleScrollView, at2: .bottom)
+        addConstraint(rulesContainer, at: .width, v2: ruleScrollView, at2: .width)
+        rulesContainerHeight = NSLayoutConstraint(item: rulesContainer, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 50)
         view.addConstraint(rulesContainerHeight)
-        addConstraint(tapeLabel, at: .CenterX, v2: view, at2: .CenterX)
-        
+        addConstraint(tapeLabel, at: .centerX, v2: view, at2: .centerX)
+ 
         self.reset()
+        print("View did load finished")
     }
     
     func boughtHints() -> Bool {
         return TuringSettings.sharedInstance.hintsUnlocked
     }
     
-    func hint(button: UIBarButtonItem) {
+    func hint(_ button: UIBarButtonItem) {
         if challenge.hints.count == 0 {
             flashAlert("You're on your own for this level")
         } else if challenge.hintsAreFree || boughtHints() {
@@ -196,7 +202,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
     
     var speedTimes: Int = 1
     
-    func fastForward(button: UIBarButtonItem) {
+    func fastForward(_ button: UIBarButtonItem) {
         if stepDelay > 0.05 {
             stepDelay /= 2
             speedTimes *= 2
@@ -210,39 +216,39 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             flashAlert("Normal speed")
         }
         if let timerRunning = timer {
-            let userInfo: AnyObject? = timerRunning.userInfo
+            let userInfo: AnyObject? = timerRunning.userInfo as AnyObject?
             timerRunning.invalidate()
-            timer = NSTimer.scheduledTimerWithTimeInterval(stepDelay, target: self, selector: "nextStep:", userInfo: userInfo, repeats: true)
+            timer = Timer.scheduledTimer(timeInterval: stepDelay, target: self, selector: #selector(ViewController.nextStep(_:)), userInfo: userInfo, repeats: true)
         }
     }
     
     func giveUp() {
-        self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+        self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
     
     func cancelNewRule() {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
         editingRule = nil
     }
     
-    func addRule(sender: UIButton) {
+    func addRule(_ sender: UIButton) {
         let ruleForCurrentState = playMachine.ruleToUse()
-        if let rule = ruleForCurrentState {
+        if ruleForCurrentState != nil {
             
         } else if playMachine.state <= challenge.maxState {
-            editingRule = Rule(movingDirection: .Left, state: playMachine.state, read: playMachine.read())
+            editingRule = Rule(movingDirection: .left, state: playMachine.state, read: playMachine.read())
         }
-        self.performSegueWithIdentifier("addrule", sender: sender)
+        self.performSegue(withIdentifier: "addrule", sender: sender)
     }
     var editingRule: Rule?
-    func editRule(rule: Rule) {
+    func editRule(_ rule: Rule) {
         editingRule = rule
-        self.performSegueWithIdentifier("addrule", sender: nil)
+        self.performSegue(withIdentifier: "addrule", sender: nil)
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "addrule" {
-            let dest = (segue.destinationViewController as! UINavigationController).viewControllers.last as! AddRuleViewController
+            let dest = (segue.destination as! UINavigationController).viewControllers.last as! AddRuleViewController
             if let rule = editingRule {
                 dest.startingState = rule.state
                 dest.endState = rule.newState
@@ -258,34 +264,33 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         }
     }
     
-    func newRuleLabelWithRule(rule: Rule) {
+    func newRuleLabelWithRule(_ rule: Rule) {
         let previousRuleLabel = ruleLabels.last
-        var newRuleLabel = UILabel(frame: CGRectZero)
+        let newRuleLabel = UILabel(frame: CGRect.zero)
         newRuleLabel.textColor = TEXT_COLOR
-        newRuleLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
-        newRuleLabel.textAlignment = .Center
-        newRuleLabel.userInteractionEnabled = true
+        newRuleLabel.translatesAutoresizingMaskIntoConstraints = false
+        newRuleLabel.textAlignment = .center
+        newRuleLabel.isUserInteractionEnabled = true
         newRuleLabel.layer.cornerRadius = 5
         newRuleLabel.layer.borderWidth = 1
-        newRuleLabel.layer.backgroundColor = RULE_BG_COLOR.CGColor
-        newRuleLabel.layer.borderColor = RULE_BORDER_COLOR.CGColor
-        let d = rule.direction==Direction.Left ? "left" : "right"
+        newRuleLabel.layer.backgroundColor = RULE_BG_COLOR.cgColor
+        newRuleLabel.layer.borderColor = RULE_BORDER_COLOR.cgColor
         newRuleLabel.attributedText = rule.preview
-        let tap = UITapGestureRecognizer(target: self, action: "ruleTapped:")
+        let tap = UITapGestureRecognizer(target: self, action: #selector(ViewController.ruleTapped(_:)))
         tap.delegate = self
         newRuleLabel.addGestureRecognizer(tap)
-        var swiper = UISwipeGestureRecognizer(target: self, action: "ruleSwiped:")
-        swiper.direction = UISwipeGestureRecognizerDirection.Left
+        let swiper = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.ruleSwiped(_:)))
+        swiper.direction = UISwipeGestureRecognizerDirection.left
         newRuleLabel.addGestureRecognizer(swiper)
         //ruleScrollView.contentSize = CGSizeMake(view.frame.width, CGFloat(rules.count)*(RULE_HEIGHT+RULE_SPACING))
         rulesContainer.addSubview(newRuleLabel)
-        addConstraint(rulesContainer, at: .Left, v2: newRuleLabel, at2: .Left, c: -RULE_SPACING)
-        addConstraint(rulesContainer, at: .Right, v2: newRuleLabel, at2: .Right, c: RULE_SPACING)
-        addConstraint(newRuleLabel, at: .Height, v2: nil, at2: .NotAnAttribute, c: RULE_HEIGHT)
+        addConstraint(rulesContainer, at: .left, v2: newRuleLabel, at2: .left, c: -RULE_SPACING)
+        addConstraint(rulesContainer, at: .right, v2: newRuleLabel, at2: .right, c: RULE_SPACING)
+        addConstraint(newRuleLabel, at: .height, v2: nil, at2: .notAnAttribute, c: RULE_HEIGHT)
         if let prev = previousRuleLabel {
-            addConstraint(prev, at: .Bottom, v2: newRuleLabel, at2: .Top, c: -RULE_SPACING)
+            addConstraint(prev, at: .bottom, v2: newRuleLabel, at2: .top, c: -RULE_SPACING)
         } else {
-            addConstraint(rulesContainer, at: .Top, v2: newRuleLabel, at2: .Top, c: -RULE_SPACING)
+            addConstraint(rulesContainer, at: .top, v2: newRuleLabel, at2: .top, c: -RULE_SPACING)
         }
         ruleLabels.append(newRuleLabel)
         self.view.layoutIfNeeded()
@@ -293,18 +298,18 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         self.view.layoutIfNeeded()
     }
     
-    func newRule(rule: Rule) {
+    func newRule(_ rule: Rule) {
         
         if let wasRule = editingRule {
             editingRule = nil
             if wasRule != rule {
-                if let i = find(playMachine.rules, wasRule) {
+                if let i = playMachine.rules.index(of: wasRule) {
                     deleteRuleAtIndex(i)
                 }
             }
         }
         var indexToReplace: Int?
-        for (index,ruleAlreadyExists) in enumerate(playMachine.rules) {
+        for (index,ruleAlreadyExists) in playMachine.rules.enumerated() {
             if ruleAlreadyExists == rule {
                 indexToReplace = index
             }
@@ -320,65 +325,63 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         resetWithRules(rules)
         
         ruleLabels[indexToReplace!].attributedText = rule.preview
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
   
-    func ruleTapped(tap: UITapGestureRecognizer) {
+    func ruleTapped(_ tap: UITapGestureRecognizer) {
         //touchUp(tap.view!)
-        let index = find(self.ruleLabels, tap.view as! UILabel)!
+        let index = self.ruleLabels.index(of: tap.view as! UILabel)!
         editRule(playMachine.rules[index])
     }
   
-    func ruleSwiped(swipe: UISwipeGestureRecognizer) {
-        let index = find(self.ruleLabels, swipe.view as! UILabel)!
+    func ruleSwiped(_ swipe: UISwipeGestureRecognizer) {
+        let index = self.ruleLabels.index(of: swipe.view as! UILabel)!
         // delete rule at index
         deleteRuleAtIndex(index)
     }
     
-    func deleteRuleAtIndex(index: Int) {
+    func deleteRuleAtIndex(_ index: Int) {
         var rules = playMachine.rules
-        rules.removeAtIndex(index)
+        rules.remove(at: index)
         resetWithRules(rules)
         
-        var labelToRemove = self.ruleLabels[index]
-        self.ruleLabels.removeAtIndex(index)
+        let labelToRemove = self.ruleLabels[index]
+        self.ruleLabels.remove(at: index)
         
         var toRemove = [NSLayoutConstraint]()
-        for constraint in view.constraints() {
-            if let cons = constraint as? NSLayoutConstraint {
-                if let labelFirst = cons.firstItem as? UILabel {
-                    if labelFirst == labelToRemove {
-                        toRemove.append(cons)
-                        continue
-                    }
+        for constraint in view.constraints {
+            if let labelFirst = constraint.firstItem as? UILabel {
+                if labelFirst == labelToRemove {
+                    toRemove.append(constraint)
+                    continue
                 }
-                if let labelSecond = cons.secondItem as? UILabel {
-                    if labelSecond == labelToRemove {
-                        toRemove.append(cons)
-                    }
+            }
+            if let labelSecond = constraint.secondItem as? UILabel {
+                if labelSecond == labelToRemove {
+                    toRemove.append(constraint)
                 }
             }
         }
         view.removeConstraints(toRemove)
-        
+    
         if index < self.ruleLabels.count {
             // not the last one, so have to fix constraint
-            var labelToFix = self.ruleLabels[index]
+            let labelToFix = self.ruleLabels[index]
             
             if index > 0 {
                 let prev = self.ruleLabels[index-1]
-                addConstraint(prev, at: .Bottom, v2: labelToFix, at2: .Top, c: -RULE_SPACING)
+                addConstraint(prev, at: .bottom, v2: labelToFix, at2: .top, c: -RULE_SPACING)
             } else {
-                addConstraint(rulesContainer, at: .Top, v2: labelToFix, at2: .Top, c: -RULE_SPACING)
+                addConstraint(rulesContainer, at: .top, v2: labelToFix, at2: .top, c: -RULE_SPACING)
             }
         }
         
-        UIView.animateWithDuration(0.1, animations: { () -> Void in
+        UIView.animate(withDuration: 0.1, animations: { () -> Void in
             self.view.layoutIfNeeded()
             labelToRemove.alpha = 0
-            }) { (a) -> Void in
+            }, completion: { (a) -> Void in
                 labelToRemove.removeFromSuperview()
-        }
+        }) 
     }
     /*
     func touchDown(view: UIView) {
@@ -388,19 +391,19 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         view.layer.backgroundColor = UIColor.whiteColor().CGColor
     }
     */
-    func highlightRule(rule: Rule?) {
-        UIView.animateWithDuration(stepDelay, animations: { () -> Void in
-            for (index,possibleRule) in enumerate(self.playMachine.rules) {
+    func highlightRule(_ rule: Rule?) {
+        UIView.animate(withDuration: stepDelay, animations: { () -> Void in
+            for (index,possibleRule) in self.playMachine.rules.enumerated() {
                 if possibleRule == rule {
-                    self.ruleLabels[index].layer.backgroundColor = RULE_HIGHLIGHT_COLOR.CGColor
+                    self.ruleLabels[index].layer.backgroundColor = RULE_HIGHLIGHT_COLOR.cgColor
                 } else {
-                    self.ruleLabels[index].layer.backgroundColor = RULE_BG_COLOR.CGColor
+                    self.ruleLabels[index].layer.backgroundColor = RULE_BG_COLOR.cgColor
                 }
             }
         })
     }
     
-    func reset(button: UIBarButtonItem) {
+    func reset(_ button: UIBarButtonItem) {
         if button.title == "Reload" {
             button.title = "Reset"
             self.reloadChallenge()
@@ -413,8 +416,8 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         }
     }
     
-    var timer: NSTimer?
-    func play(button: TuringButtonView) {
+    var timer: Timer?
+    func play(_ button: TuringButtonView) {
         if button.title == "Pause" {
             self.timer?.invalidate()
             self.timer = nil
@@ -426,14 +429,14 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         } else {
             button.title="Pause"
             resetButton.title = "Reset"
-            self.timer = NSTimer.scheduledTimerWithTimeInterval(stepDelay, target: self, selector: "nextStep:", userInfo: button, repeats: true)
+            self.timer = Timer.scheduledTimer(timeInterval: stepDelay, target: self, selector: #selector(ViewController.nextStep(_:)), userInfo: button, repeats: true)
             self.updateUI()
         }
     }
     
     var stepDelay = 0.5
     
-    func nextStep(timer: NSTimer) {
+    func nextStep(_ timer: Timer) {
         if let rule = self.playMachine.step() {
             highlightRule(rule)
         } else {
@@ -453,7 +456,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         self.updateUI()
     }
     
-    func tapAtIndex(index: Int, forView view: TuringTapeView) {
+    func tapAtIndex(_ index: Int, forView view: TuringTapeView) {
         self.step()
     }
     
@@ -482,7 +485,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         if onscreen == false {
@@ -501,7 +504,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
     func numberOfCharacters(forView view: TuringTapeView) -> Int {
         return challenge.startTape.count
     }
-    func characterAtIndex(index: Int, forView view: TuringTapeView) -> String {
+    func characterAtIndex(_ index: Int, forView view: TuringTapeView) -> String {
         if view.id == 0 {
             // playMachineTape
             return String((self.playMachine?.tape ?? challenge.startTape)[index])
@@ -511,16 +514,10 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
     }
     
     func reset() {
-        if let rules = challenge?.storedRules() {
-            //println("found rules")
-            resetWithRules(rules)
-        } else {
-            //println("no rules found")
-            resetWithRules([])
-        }
+        resetWithRules(challenge?.storedRules() ?? [])
     }
     
-    func resetWithRules(rules: [Rule]) {
+    func resetWithRules(_ rules: [Rule]) {
         self.title = challenge.name
         challenge.storeRules(rules)
         //println("new rules")
@@ -537,49 +534,48 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         updateUI()
     }
     
-    func flashAlerts(alerts: String...) {
+    func flashAlerts(_ alerts: String...) {
         self.flashAlerts(alerts)
     }
-    func flashAlert(alert: String) {
+    func flashAlert(_ alert: String) {
         self.flashAlerts(alert)
     }
     
-    func flashAlerts(alerts: [String], offset: CGFloat = 0) {
+    func flashAlerts(_ alerts: [String], offset: CGFloat = 0) {
         var alertTexts = alerts
         let label = UILabel()
-        label.setTranslatesAutoresizingMaskIntoConstraints(false)
-        label.text = alertTexts.removeAtIndex(0)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = alertTexts.remove(at: 0)
         label.textColor = ALERT_TEXT_COLOR
         label.backgroundColor = ALERT_BG_COLOR
         label.layer.cornerRadius = 12
         label.layer.masksToBounds = true
-        label.layer.borderColor = ALERT_BORDER_COLOR.CGColor
+        label.layer.borderColor = ALERT_BORDER_COLOR.cgColor
         label.layer.borderWidth = 2
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.alpha = 0
         view.addSubview(label)
-        addConstraint(label, at: .CenterX, v2: view, at2: .CenterX)
-        addConstraint(label, at: .CenterY, v2: view, at2: .CenterY, c: offset)
-        addConstraint(label, at: .Height, v2: nil, at2: .NotAnAttribute, c: 30)
-        addConstraint(label, at: .Width, v2: view, at2: .Width, c: -10)
+        addConstraint(label, at: .centerX, v2: view, at2: .centerX)
+        addConstraint(label, at: .centerY, v2: view, at2: .centerY, c: offset)
+        addConstraint(label, at: .height, v2: nil, at2: .notAnAttribute, c: 30)
+        addConstraint(label, at: .width, v2: view, at2: .width, c: -10)
         view.layoutIfNeeded()
-        UIView.animateWithDuration(1, animations: { () -> Void in
+        UIView.animate(withDuration: 1, animations: { () -> Void in
             label.alpha = 1
-        }) { (c) -> Void in
+        }, completion: { (c) -> Void in
             if alertTexts.count > 0 {
                 self.flashAlerts(alertTexts, offset: offset+40)
             }
-            UIView.animateWithDuration(4, animations: { () -> Void in
-                label.transform = CGAffineTransformMakeScale(1.03, 1.03)
+            UIView.animate(withDuration: 4, animations: { () -> Void in
+                label.transform = CGAffineTransform(scaleX: 1.03, y: 1.03)
                 }, completion: { (a) -> Void in
-                    UIView.animateWithDuration(3, animations: { () -> Void in
+                    UIView.animate(withDuration: 3, animations: { () -> Void in
                         label.alpha = 0
                         }, completion: { (s) -> Void in
                             label.removeFromSuperview()
                     })
             })
-            
-        }
+        })
     }
     
     func loadNextChallenge() {
@@ -588,28 +584,29 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             deleteRuleAtIndex(0)
         }
         self.challenge.storeRules(rulesBefore)
-        reloadChallenge(index: self.challenge.index+1)
+        reloadChallenge(self.challenge.index+1)
         if playMachine.rules.count == 0 {
             playStartingAlerts()
         }
     }
     
-    func reloadChallenge(var index: Int! = nil) {
+    func reloadChallenge(_ index: Int! = nil) {
+        var index = index
         if index == nil {
             index = self.challenge.index
             if self.challenge.name == "Bit flipper" {
                 self.flashAlert("Try out your machine on a different tape")
             }
         }
-        self.challenge = TuringChallenge(index: index)
+        self.challenge = TuringChallenge(index: index!)
         self.reset()
         self.ruleScrollView.flashScrollIndicators()
     }
     
-    func calculateAccuracy(andThen callback: Double->Void) {
-        NSOperationQueue().addOperationWithBlock { () -> Void in
+    func calculateAccuracy(andThen callback: @escaping (Double)->Void) {
+        OperationQueue().addOperation { () -> Void in
             let accuracy = TuringChallenge.challengeAccuracy(forIndex: self.challenge.index)
-            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+            OperationQueue.main.addOperation { () -> Void in
                 callback(accuracy)
             }
         }
@@ -632,19 +629,19 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             flashAlert("Testing on 100 random tapes...")
             self.calculateAccuracy(andThen: { (accuracy) -> Void in
                 let percentage =  Int(round(accuracy*100))
-                var alert = UIAlertController(title: "Challenge completed with accuracy \(percentage)%", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "Play Again", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+                var alert = UIAlertController(title: "Challenge completed with accuracy \(percentage)%", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "Play Again", style: UIAlertActionStyle.default, handler: { (action) -> Void in
                     self.reloadChallenge()
                 }))
-                alert.addAction(UIAlertAction(title: "Select Level", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
-                    self.navigationController?.popViewControllerAnimated(true)
+                alert.addAction(UIAlertAction(title: "Select Level", style: UIAlertActionStyle.default, handler: { (action) -> Void in
+                    _ = self.navigationController?.popViewController(animated: true)
                 }))
                 if self.challenge.index < MAX_CHALLENGE_INDEX {
-                    alert.addAction(UIAlertAction(title: "Next Level", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+                    alert.addAction(UIAlertAction(title: "Next Level", style: UIAlertActionStyle.default, handler: { (action) -> Void in
                         self.loadNextChallenge()
                     }))
                 }
-                self.presentViewController(alert, animated: true, completion: nil)
+                self.present(alert, animated: true, completion: nil)
             })
             return
         }
@@ -661,19 +658,22 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
             reset()
         } else {
             self.view.removeConstraint(headViewConstraint)
-            headViewConstraint = NSLayoutConstraint(item: tapeHeadView, attribute: .CenterX, relatedBy: .Equal, toItem: playTapeView.viewAtIndex(playMachine.index), attribute: .CenterX, multiplier: 1, constant: 0)
+            headViewConstraint = NSLayoutConstraint(item: tapeHeadView, attribute: .centerX, relatedBy: .equal, toItem: playTapeView.viewAtIndex(playMachine.index), attribute: .centerX, multiplier: 1, constant: 0)
             view.addConstraint(headViewConstraint)
         }
-        func animate() {
-            self.view.layoutIfNeeded()
-            for var i = 0; i < challenge.startTape.count; i++ {
+        func colorChange() {
+            for i in 0 ..< challenge.startTape.count {
                 playTapeView.viewColorChange(i, newColor: i==playMachine.index ? TAPE_SELECTED_COLOR : TAPE_BG_COLOR)
             }
         }
+        func layoutAndColorChange() {
+            self.view.layoutIfNeeded()
+            colorChange()
+        }
         if onscreen {
-            UIView.animateWithDuration(stepDelay, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: animate, completion: nil)
+            UIView.animate(withDuration: stepDelay, delay: 0, options: UIViewAnimationOptions(), animations: layoutAndColorChange, completion: nil)
         } else {
-            animate()
+            colorChange()
         }
     }
 
