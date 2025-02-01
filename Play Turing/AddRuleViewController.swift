@@ -159,17 +159,17 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
         resultTape?.viewColorChange(viewIndexForDirection(), newColor: TAPE_SELECTED_COLOR)
     }
     
-    func tapResultState(_ tap: UITapGestureRecognizer) {
+    @objc func tapResultState(_ tap: UITapGestureRecognizer) {
         self.endStateStepper.value = Double((Int(self.endStateStepper.value) + 1) % (self.maxState + 1))
         self.endStateChanged(endStateStepper)
     }
     
-    func tapConditionState(_ tap: UITapGestureRecognizer) {
+    @objc func tapConditionState(_ tap: UITapGestureRecognizer) {
         self.startingStateStepper.value = Double((Int(self.startingStateStepper.value) + 1) % (self.maxState + 1))
         self.startingStateChanged(startingStateStepper)
     }
     
-    func swipeHead(_ pan: UIPanGestureRecognizer) {
+    @objc func swipeHead(_ pan: UIPanGestureRecognizer) {
         if tapeLength == 1 {
             return
         }
@@ -183,7 +183,7 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
         }
     }
     
-    func cancel() {
+    @objc func cancel() {
         delegate.cancelNewRule()
     }
     
@@ -274,7 +274,7 @@ class AddRuleViewController: UIViewController, UIPickerViewDataSource, UIPickerV
         return Rule(state: startingState, read: readingCharacter, newState: endState, write: writeCharacter, direction: direction)
     }
     
-    func save() {
+    @objc func save() {
         self.delegate.newRule(currentRule)
     }
 

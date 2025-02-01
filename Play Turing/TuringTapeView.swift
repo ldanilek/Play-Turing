@@ -44,7 +44,7 @@ class TuringTapeView: UIView {
         newLabel.layer.masksToBounds = true
         newLabel.textColor = TAPE_CHAR_COLOR
         if #available(iOS 8.2, *) {
-            newLabel.font = UIFont.systemFont(ofSize: newLabel.font.pointSize, weight: UIFontWeightBlack)
+            newLabel.font = UIFont.systemFont(ofSize: newLabel.font.pointSize, weight: UIFont.Weight.black)
         } else {
             // Fallback on earlier versions
             newLabel.font = UIFont.systemFont(ofSize: newLabel.font.pointSize)
@@ -135,7 +135,7 @@ class TuringTapeView: UIView {
         self.reload()
     }
     
-    func tap(_ tap: UITapGestureRecognizer) {
+    @objc func tap(_ tap: UITapGestureRecognizer) {
         delegate.tapAtIndex(charViews.index(of: tap.view as! UILabel)!, forView: self)
     }
     

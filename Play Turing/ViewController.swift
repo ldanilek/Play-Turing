@@ -190,7 +190,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         return TuringSettings.sharedInstance.hintsUnlocked
     }
     
-    func hint(_ button: UIBarButtonItem) {
+    @objc func hint(_ button: UIBarButtonItem) {
         if challenge.hints.count == 0 {
             flashAlert("You're on your own for this level")
         } else if challenge.hintsAreFree || boughtHints() {
@@ -202,7 +202,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
     
     var speedTimes: Int = 1
     
-    func fastForward(_ button: UIBarButtonItem) {
+    @objc func fastForward(_ button: UIBarButtonItem) {
         if stepDelay > 0.05 {
             stepDelay /= 2
             speedTimes *= 2
@@ -231,7 +231,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         editingRule = nil
     }
     
-    func addRule(_ sender: UIButton) {
+    @objc func addRule(_ sender: UIButton) {
         let ruleForCurrentState = playMachine.ruleToUse()
         if ruleForCurrentState != nil {
             
@@ -328,13 +328,13 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         self.dismiss(animated: true, completion: nil)
     }
   
-    func ruleTapped(_ tap: UITapGestureRecognizer) {
+    @objc func ruleTapped(_ tap: UITapGestureRecognizer) {
         //touchUp(tap.view!)
         let index = self.ruleLabels.index(of: tap.view as! UILabel)!
         editRule(playMachine.rules[index])
     }
   
-    func ruleSwiped(_ swipe: UISwipeGestureRecognizer) {
+    @objc func ruleSwiped(_ swipe: UISwipeGestureRecognizer) {
         let index = self.ruleLabels.index(of: swipe.view as! UILabel)!
         // delete rule at index
         deleteRuleAtIndex(index)
@@ -403,7 +403,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
         })
     }
     
-    func reset(_ button: UIBarButtonItem) {
+    @objc func reset(_ button: UIBarButtonItem) {
         if button.title == "Reload" {
             button.title = "Reset"
             self.reloadChallenge()
@@ -436,7 +436,7 @@ class ViewController: UIViewController, TuringTapeViewDelegate, AddRuleDelegate,
     
     var stepDelay = 0.5
     
-    func nextStep(_ timer: Timer) {
+    @objc func nextStep(_ timer: Timer) {
         if let rule = self.playMachine.step() {
             highlightRule(rule)
         } else {

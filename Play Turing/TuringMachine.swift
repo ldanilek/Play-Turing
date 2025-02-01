@@ -48,29 +48,29 @@ struct Rule: Hashable {
     }
     func stringForState(_ state: State) -> NSAttributedString {
         let s = "q\(state)"
-        let string = NSAttributedString(string: s, attributes: [NSFontAttributeName: UIFont(name: MAIN_FONT_NAME, size: RULE_FONT_SIZE)!])
+        let string = NSAttributedString(string: s, attributes: [NSAttributedStringKey.font: UIFont(name: MAIN_FONT_NAME, size: RULE_FONT_SIZE)!])
         return string
     }
     func stringForChar(_ char: Character) -> NSAttributedString {
         var string: NSAttributedString = NSAttributedString()
         if #available(iOS 8.2, *) {
-            string = NSAttributedString(string: "\(char)", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: RULE_FONT_SIZE, weight: UIFontWeightBlack)])
+            string = NSAttributedString(string: "\(char)", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: RULE_FONT_SIZE, weight: UIFont.Weight.black)])
         } else {
-            string = NSAttributedString(string: "\(char)", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: RULE_FONT_SIZE)])
+            string = NSAttributedString(string: "\(char)", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: RULE_FONT_SIZE)])
             // Fallback on earlier versions
         }
         return string
     }
     func stringForDirection() -> NSAttributedString {
         let d = direction==Direction.left ? "⬅︎" : "➡︎"
-        let string = NSAttributedString(string: d, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: RULE_FONT_SIZE)])
+        let string = NSAttributedString(string: d, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: RULE_FONT_SIZE)])
         return string
     }
     var preview: NSAttributedString {
-        let mainAttributes = [NSFontAttributeName: UIFont(name: MAIN_FONT_NAME, size: RULE_FONT_SIZE)!]
+        let mainAttributes = [NSAttributedStringKey.font: UIFont(name: MAIN_FONT_NAME, size: RULE_FONT_SIZE)!]
         let str = NSMutableAttributedString(string: "Read ", attributes: mainAttributes)
         let inStr = NSAttributedString(string: " in ", attributes: mainAttributes)
-        let arrow = NSAttributedString(string: " ⇒ ", attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: RULE_FONT_SIZE)])
+        let arrow = NSAttributedString(string: " ⇒ ", attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: RULE_FONT_SIZE)])
         let move = NSAttributedString(string: "move ", attributes: mainAttributes)
         let comma = NSAttributedString(string: ", ", attributes: mainAttributes)
         let setTo = NSAttributedString(string: "set to ", attributes: mainAttributes)

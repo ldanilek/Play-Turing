@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //srand(time)
         let appearance = UINavigationBar.appearance()
         let toolbarAppearance = UIToolbar.appearance()
-        let attributes = [NSForegroundColorAttributeName: TEXT_COLOR]
+        let attributes = [NSAttributedStringKey.foregroundColor: TEXT_COLOR]
         appearance.titleTextAttributes = attributes
         appearance.tintColor = NAV_BUTTON_COLOR
         appearance.barTintColor = NAV_BAR_COLOR

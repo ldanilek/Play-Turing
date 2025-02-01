@@ -35,16 +35,16 @@ open class TuringSettings: NSObject, SKProductsRequestDelegate, SKPaymentTransac
     
     open var hintsPriceString: String?
     
-    fileprivate var doneHandler: (Void)->Void = {}
+    fileprivate var doneHandler: ()->Void = {}
     // in the done handler, check hintsPriceString
-    func getHintsPriceString(_ done: @escaping (Void)->Void) -> Void {
+    func getHintsPriceString(_ done: @escaping ()->Void) -> Void {
         doneHandler = done
         PRODUCT_REQUEST.delegate = self
         PRODUCT_REQUEST.start()
     }
     // call this only after getHintsPriceString's done handler has returned, and only if the price has been updated
     // in the done handler, check hintsUnlocked
-    func downloadHints(_ done: @escaping (Void)->Void) -> Void {
+    func downloadHints(_ done: @escaping ()->Void) -> Void {
         if let p = product {
             doneHandler = done
             SKPaymentQueue.default().add(SKPayment(product: p))
@@ -52,7 +52,7 @@ open class TuringSettings: NSObject, SKProductsRequestDelegate, SKPaymentTransac
     }
     
     //
-    func restoreHints(_ done: @escaping (Void)->Void) -> Void {
+    func restoreHints(_ done: @escaping ()->Void) -> Void {
         doneHandler = done
         SKPaymentQueue.default().restoreCompletedTransactions()
     }
@@ -105,8 +105,8 @@ open class TuringSettings: NSObject, SKProductsRequestDelegate, SKPaymentTransac
         let leftParagraphStyle = NSMutableParagraphStyle()
         leftParagraphStyle.firstLineHeadIndent = 20
         leftParagraphStyle.alignment = .left
-        let headerAttributes: [String : AnyObject] = [NSFontAttributeName: UIFont(name: fontName, size: 20)!, NSParagraphStyleAttributeName: centeredParagaphStyle as AnyObject]
-        let bodyAttributes: [String : AnyObject] = [NSFontAttributeName: UIFont(name: fontName, size: 15)!, NSParagraphStyleAttributeName: leftParagraphStyle]
+        let headerAttributes: [NSAttributedStringKey : AnyObject] = [NSAttributedStringKey.font: UIFont(name: fontName, size: 20)!, NSAttributedStringKey.paragraphStyle: centeredParagaphStyle as AnyObject]
+        let bodyAttributes: [NSAttributedStringKey : AnyObject] = [NSAttributedStringKey.font: UIFont(name: fontName, size: 15)!, NSAttributedStringKey.paragraphStyle: leftParagraphStyle]
         
         mutableText.append(NSAttributedString(string: "About Turing Machines", attributes: headerAttributes))
         mutableText.append(NSAttributedString(string: "\n\nA turing machine is the ultimate hypothetical computer, but it operates under simple principles. It has some states (q0, q1, q2, ...) and it reads from a tape with some characters (-, 0, 1, ...).\n\nAt each step, the machine follows rules. Based on the current state and the current character, the machine knows what rule to use. The rule tells it to write a new character, go to a new state, and move left or right on the tape.\n\nUsing certain rules, a turing machine could do anything a supercomputer can do, but programming that machine would be a hassle. Some of the small procedures, like adding two numbers, are simple enough to program. Play Turing presents these simple programming challenges as levels, so the player can learn how Turing Machines work and develop algorithmic thinking.", attributes: bodyAttributes))
